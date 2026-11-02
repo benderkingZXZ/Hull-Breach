@@ -69,14 +69,18 @@ jobs:
           restore-keys: |
             Library-Android-
 
-      # Шаг 1: отдельный запуск Unity, который импортирует TextMeshPro Essentials (без них не работает текст)
+      # Шаг 1: отдельный запуск Unity, который импортирует TextMeshPro Essentials (без них не работает текст).
+      # Импорт пакета асинхронный, поэтому manualExit: true (без -quit) — CiPrepare.Run сам вызовет Exit после импорта.
+      # timeout-minutes — страховка, чтобы шаг не завис на 2 часа, если Unity так и не завершится.
       - name: Prepare project (TextMeshPro)
         uses: game-ci/unity-builder@v4
+        timeout-minutes: 25
         with:
           targetPlatform: Android
           unityVersion: auto
           versioning: None
           allowDirtyBuild: true
+          manualExit: true
           buildMethod: HullBreach.GameEditor.CiPrepare.Run
 
       # Шаг 2: создание сцены, настройки Android и сборка APK -> build/Android/HullBreach.apk
