@@ -1,0 +1,19 @@
+{
+    "name": "HullBreach.Game.Editor",
+    "rootNamespace": "HullBreach.GameEditor",
+    "references": [
+        "HullBreach.Game",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

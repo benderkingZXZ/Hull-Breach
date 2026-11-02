@@ -1,0 +1,117 @@
+name: Build Android APK
+
+# Автосборка APK при каждом push в main/master и по кнопке «Run workflow».
+# Готовый APK: вкладка Releases (прямая ссылка на скачивание) и Actions → Artifacts.
+# Первый запуск требует секретов UNITY_LICENSE, UNITY_EMAIL, UNITY_PASSWORD (см. README.md).
+
+on:
+  push:
+    branches: [main, master]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+  workflow_dispatch:
+    inputs:
+      include_armv7:
+        description: "Добавить 32-битную версию ARMv7 (APK больше, сборка дольше)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Check Unity secrets
+        run: |
+          missing=0
+          for name in UNITY_LICENSE UNITY_EMAIL UNITY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error title=Secret is missing::GitHub secret $name is not set. Settings -> Secrets and variables -> Actions. See README.md, section 'Unity license'."
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: false
+          swap-storage: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: |
+            Library-Android-
+
+      # Шаг 1: отдельный запуск Unity, который импортирует TextMeshPro Essentials (без них не работает текст)
+      - name: Prepare project (TextMeshPro)
+        uses: game-ci/unity-builder@v4
+        with:
+          targetPlatform: Android
+          unityVersion: auto
+          versioning: None
+          allowDirtyBuild: true
+          buildMethod: HullBreach.GameEditor.CiPrepare.Run
+
+      # Шаг 2: создание сцены, настройки Android и сборка APK -> build/Android/HullBreach.apk
+      - name: Build Android APK
+        uses: game-ci/unity-builder@v4
+        with:
+          targetPlatform: Android
+          unityVersion: auto
+          versioning: None
+          allowDirtyBuild: true
+          buildMethod: HullBreach.GameEditor.CiBuild.BuildAndroid
+          customParameters: -hbVersion 1.0.${{ github.run_number }} -hbVersionCode ${{ github.run_number }} ${{ inputs.include_armv7 && '-includeArmv7' || '' }}
+
+      - name: Check APK
+        run: |
+          ls -la build/Android || true
+          test -f build/Android/HullBreach.apk
+          echo "APK size: $(du -h build/Android/HullBreach.apk | cut -f1)"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HullBreach-apk-${{ github.run_number }}
+          path: build/Android/HullBreach.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub Release with APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          name: Hull Breach APK #${{ github.run_number }}
+          prerelease: true
+          files: build/Android/HullBreach.apk
+          body: |
+            Автосборка #${{ github.run_number }} из коммита ${{ github.sha }}.
+            Скачайте HullBreach.apk, разрешите установку из неизвестных источников и установите на Android 7.0+.
