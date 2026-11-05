@@ -5,10 +5,6 @@ using HullBreach.Data;
 
 namespace HullBreach.UI.Contracts
 {
-    /// <summary>
-    /// Навигация и состояние забега. Реализация для реального бэкенда — Bridge/GameFlowAdapter
-    /// (обёртка над HullBreach.Core.GameStateManager). Все команды возвращают true, если приняты.
-    /// </summary>
     public interface IGameFlowService
     {
         GameState CurrentState { get; }
@@ -22,7 +18,6 @@ namespace HullBreach.UI.Contracts
         IReadOnlyList<ShipDefinition> GetShipOptions();
         IReadOnlyList<EntryPointProfile> GetEntryPoints();
 
-        /// <summary>(предыдущее, новое). Вызывается ПОСЛЕ смены CurrentState.</summary>
         event Action<GameState, GameState> StateChanged;
 
         bool SelectRobot(RobotType robot);

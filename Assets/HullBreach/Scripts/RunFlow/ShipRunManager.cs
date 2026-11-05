@@ -11,11 +11,6 @@ using HullBreach.Rooms;
 
 namespace HullBreach.RunFlow
 {
-    /// <summary>
-    /// Управляет прохождением ОДНОГО корабля: генерация комнат, вход в комнаты, спавн врагов,
-    /// переходы между комнатами, завершение (реактор уничтожен) или провал (робот погиб).
-    /// Не знает о ресурсах, модулях и UI — только сообщает событиями.
-    /// </summary>
     public class ShipRunManager : MonoBehaviour
     {
         [SerializeField] private RoomGenerator roomGenerator;
@@ -40,11 +35,9 @@ namespace HullBreach.RunFlow
         private int enemiesKilled;
 
         public event Action<ShipDefinition, EntryPointType> ShipStarted;
-        /// <summary>(индекс комнаты, всего комнат, комната).</summary>
         public event Action<int, int, RoomController> RoomEntered;
         public event Action<int> RoomCleared;
         public event Action<EnemyController> EnemyKilled;
-        /// <summary>(сумма, мировая позиция убитого врага).</summary>
         public event Action<int, Vector3> ResourcesEarned;
         public event Action<ShipCompletionResult> ShipCompleted;
         public event Action<ShipFailureInfo> ShipFailed;
@@ -61,7 +54,6 @@ namespace HullBreach.RunFlow
         }
         public int EnemiesRemaining { get { return CurrentRoom != null ? CurrentRoom.EnemiesAlive : 0; } }
 
-        /// <summary>Программная настройка вместо инспектора.</summary>
         public void Configure(RoomGenerator generator, EnemySpawner spawner, PlayerController playerController)
         {
             roomGenerator = generator;
@@ -69,7 +61,6 @@ namespace HullBreach.RunFlow
             player = playerController;
         }
 
-        /// <summary>Запускает корабль. false — ошибка настройки (подробности в консоли).</summary>
         public bool StartShip(ShipDefinition ship, EntryPointType entry)
         {
             if (ship == null || roomGenerator == null || enemySpawner == null || player == null)
@@ -111,14 +102,12 @@ namespace HullBreach.RunFlow
             return true;
         }
 
-        /// <summary>Прерывает корабль без событий и удаляет комнаты.</summary>
         public void AbortShip()
         {
             IsRunning = false;
             Cleanup();
         }
 
-        /// <summary>Останавливает корутины, отписывается и уничтожает комнаты (вызывать после ShipCompleted/ShipFailed).</summary>
         public void Cleanup()
         {
             if (routine != null) { StopCoroutine(routine); routine = null; }

@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace HullBreach.Game
 {
-    /// <summary>Реактор в финальной комнате: пульсирует, пока мини-босс жив, и гаснет после зачистки комнаты.</summary>
     public sealed class ReactorVisual : MonoBehaviour
     {
         private RoomController room;

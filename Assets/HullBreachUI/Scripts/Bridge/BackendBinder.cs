@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Bridge
 {
-    /// <summary>Ссылки на системы игрового модуля. Пустые поля ищутся в сцене автоматически.</summary>
     public sealed class BackendRefs
     {
         public GameStateManager State;
@@ -19,10 +18,6 @@ namespace HullBreach.UI.Bridge
         public PlayerController Player;
     }
 
-    /// <summary>
-    /// Собирает UIServices из реальных систем бэкенда (API v1.0). Если чего-то не хватает — возвращает null
-    /// и причину в error; тогда HullBreachUIBootstrap запускает заглушку.
-    /// </summary>
     public static class BackendBinder
     {
         private sealed class BridgeHandle : IDisposable

@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Hud
 {
-    /// <summary>Прицельная рамка на цели автонаведения: показывает, по кому робот бьёт.</summary>
     public sealed class TargetMarker : MonoBehaviour
     {
         private ICombatFeed feed;

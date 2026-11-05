@@ -16,12 +16,6 @@ namespace HullBreach.Rooms
         public RoomController[] reactorRooms;
     }
 
-    /// <summary>
-    /// Генерация корабля из заранее подготовленных шаблонов (префабов).
-    /// Маршрут — цепочка из N комнат (N = 3/5/4 по точке входа): комната i связана с i+1 (двусторонне),
-    /// последняя комната — реактор с мини-боссом. Цепочка гарантирует связность, отсутствие недостижимых комнат
-    /// и отсутствие тупиков, кроме финальной комнаты. Все комнаты ставятся на одной линии с шагом roomSpacing.
-    /// </summary>
     public class RoomGenerator : MonoBehaviour
     {
         [SerializeField] private RoomTemplateSet[] templateSets;
@@ -33,7 +27,6 @@ namespace HullBreach.Rooms
 
         public IReadOnlyList<RoomController> SpawnedRooms { get { return spawnedRooms; } }
 
-        /// <summary>Программная настройка вместо инспектора.</summary>
         public void Configure(RoomTemplateSet[] sets, Transform root, float spacing)
         {
             templateSets = sets;
@@ -49,7 +42,6 @@ namespace HullBreach.Rooms
             return null;
         }
 
-        /// <summary>Строит план корабля (без создания объектов). Возвращает null, если нет набора шаблонов.</summary>
         public RoomLayout GenerateLayout(ShipDefinition ship, EntryPointType entry, int seed)
         {
             RoomTemplateSet set = FindSet(entry);
@@ -98,7 +90,6 @@ namespace HullBreach.Rooms
             return candidates.Count == 0 ? null : candidates[rng.Next(candidates.Count)];
         }
 
-        /// <summary>Предпочитает ещё не использованные в этом корабле шаблоны, затем — любой, кроме предыдущего.</summary>
         private static RoomController PickNormal(RoomController[] pool, List<RoomController> used, RoomController previous, System.Random rng)
         {
             if (pool == null) return null;
@@ -114,10 +105,6 @@ namespace HullBreach.Rooms
             return candidates.Count == 0 ? null : candidates[rng.Next(candidates.Count)];
         }
 
-        /// <summary>
-        /// Проверка плана: число комнат, шаблоны заданы и настроены, только последняя — реактор,
-        /// все комнаты достижимы от входа (обход в ширину), каждая не-финальная комната ведёт дальше.
-        /// </summary>
         public bool ValidateLayout(RoomLayout layout, out string error)
         {
             if (layout == null || layout.Rooms == null || layout.Rooms.Count == 0) { error = "План корабля пуст."; return false; }
@@ -144,7 +131,6 @@ namespace HullBreach.Rooms
                     if (plan.Connections[c] < 0 || plan.Connections[c] >= n) { error = "Связь за пределами плана у комнаты " + i; return false; }
             }
 
-            // Достижимость
             bool[] visited = new bool[n];
             Queue<int> queue = new Queue<int>();
             queue.Enqueue(0);
@@ -166,7 +152,6 @@ namespace HullBreach.Rooms
             return true;
         }
 
-        /// <summary>Создаёт комнаты из плана. Комнаты, кроме первой, отключаются до входа в них.</summary>
         public List<RoomController> BuildRooms(RoomLayout layout)
         {
             ClearRooms();

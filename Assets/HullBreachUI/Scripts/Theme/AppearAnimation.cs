@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Theme
 {
-    /// <summary>Плавное появление при каждом включении объекта (прозрачность и масштаб, unscaled-время).</summary>
     [RequireComponent(typeof(CanvasGroup))]
     public sealed class AppearAnimation : MonoBehaviour
     {

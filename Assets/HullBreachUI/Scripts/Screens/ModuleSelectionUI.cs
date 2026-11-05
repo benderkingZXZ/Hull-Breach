@@ -8,10 +8,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>
-    /// Экран награды: три модуля (название, редкость, описание), выбор одного и подтверждение.
-    /// После подтверждения бэкенд сам переводит игру на карту сектора (следующий корабль).
-    /// </summary>
     public sealed class ModuleSelectionUI : UIScreen
     {
         public override ScreenId Id { get { return ScreenId.ModuleSelection; } }
@@ -151,7 +147,7 @@ namespace HullBreach.UI.Screens
         private void OnConfirm()
         {
             if (offers == null || selectedIndex < 0 || selectedIndex >= offers.Count) return;
-            confirm.SetInteractable(false);   // двойное нажатие невозможно; экран сменится сам
+            confirm.SetInteractable(false);
             if (!Services.Flow.ChooseModule(selectedIndex))
             {
                 Manager.Toast("Не удалось установить модуль", true);

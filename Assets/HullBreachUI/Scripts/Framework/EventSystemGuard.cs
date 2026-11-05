@@ -4,10 +4,6 @@ using UnityEngine.EventSystems;
 
 namespace HullBreach.UI.Framework
 {
-    /// <summary>
-    /// Гарантирует наличие EventSystem с подходящим модулем ввода (Legacy или Input System).
-    /// Мультитач: каждый палец — отдельный pointerId, поэтому стик и кнопки работают одновременно.
-    /// </summary>
     public static class EventSystemGuard
     {
         public static void Ensure()
@@ -31,7 +27,6 @@ namespace HullBreach.UI.Framework
                                  "или включите Active Input Handling = Both.");
             }
 #endif
-            // Стик реагирует сразу, а не после порога перетаскивания в 5 px.
             es.pixelDragThreshold = 2;
         }
 

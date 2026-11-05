@@ -6,10 +6,6 @@ using HullBreach.Data;
 
 namespace HullBreach.RunFlow
 {
-    /// <summary>
-    /// Карта сектора: на каждом из 4 этапов предлагает 2–3 корабля одного уровня (с разным риском/наградой),
-    /// затем — корабль-босс «Нексус-Прайм». Это экран выбора, а не полёт.
-    /// </summary>
     public class SectorMapSystem : MonoBehaviour
     {
         public const int RegularShipCount = 4;
@@ -36,13 +32,11 @@ namespace HullBreach.RunFlow
         public bool BossCaptured { get; private set; }
         public bool IsBossStage { get { return ShipsCaptured >= RegularShipCount && !BossCaptured; } }
         public bool IsSectorCleared { get { return BossCaptured; } }
-        /// <summary>1..4 для обычных, 5 для босса.</summary>
         public int CurrentTier { get { return IsBossStage ? 5 : Mathf.Min(ShipsCaptured + 1, RegularShipCount); } }
         public IReadOnlyList<ShipDefinition> CurrentOptions { get { return options; } }
 
         public event Action<IReadOnlyList<ShipDefinition>> OptionsChanged;
 
-        /// <summary>Начало нового забега: прогресс сектора обнуляется, генерируются варианты первого этапа.</summary>
         public void ResetSector()
         {
             ShipsCaptured = 0;
@@ -73,7 +67,6 @@ namespace HullBreach.RunFlow
 
             if (BossCaptured)
             {
-                // Сектор зачищен — вариантов нет
             }
             else if (IsBossStage)
             {

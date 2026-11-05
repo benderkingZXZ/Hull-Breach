@@ -6,29 +6,28 @@ using UnityEngine;
 
 namespace HullBreach.Game
 {
-    /// <summary>
-    /// Временная графика игрока: цвет по роботу, «носик» по направлению, вспышки атаки/навыка/урона.
-    /// Подписки живут, пока объект игрока активен (вне боя он скрыт; цвет обновляется при следующем включении).
-    /// </summary>
     public sealed class PlayerVisual : MonoBehaviour
     {
-        private static readonly Color SamuraiColor = new Color(1f, 0.73f, 0.22f, 1f);
-        private static readonly Color TechnoColor = new Color(0.17f, 0.85f, 1f, 1f);
+        private const float HurtDuration = 0.14f;
+        private static readonly Color HurtTint = new Color(1f, 0.4f, 0.4f, 1f);
 
         private PlayerController player;
         private PlayerCombat combat;
         private Health health;
         private SpriteRenderer body;
-        private Transform nub;
-        private Color baseColor = Color.white;
-        private float flashTimer;
+        private SideSprites samuraiSprites;
+        private SideSprites strelSprites;
+        private SideSprites activeSprites;
+        private ArtSide side = ArtSide.Front;
+        private float hurtTimer;
 
-        public static PlayerVisual Attach(GameObject playerObject, SpriteRenderer bodyRenderer, Transform nubTransform)
+        public static PlayerVisual Attach(GameObject playerObject, SpriteRenderer renderer, SideSprites samurai, SideSprites strel)
         {
-            PlayerVisual v = playerObject.AddComponent<PlayerVisual>();
-            v.body = bodyRenderer;
-            v.nub = nubTransform;
-            return v;
+            PlayerVisual visual = playerObject.AddComponent<PlayerVisual>();
+            visual.body = renderer;
+            visual.samuraiSprites = samurai;
+            visual.strelSprites = strel;
+            return visual;
         }
 
         private void OnEnable()
@@ -37,8 +36,11 @@ namespace HullBreach.Game
             combat = GetComponent<PlayerCombat>();
             health = GetComponent<Health>();
 
-            ApplyRobot(player.RobotType);
-            player.RobotChanged += ApplyRobot;
+            if (player != null)
+            {
+                player.RobotChanged += OnRobotChanged;
+                OnRobotChanged(player.RobotType);
+            }
             if (combat != null)
             {
                 combat.Attacked += OnAttacked;
@@ -49,7 +51,7 @@ namespace HullBreach.Game
 
         private void OnDisable()
         {
-            if (player != null) player.RobotChanged -= ApplyRobot;
+            if (player != null) player.RobotChanged -= OnRobotChanged;
             if (combat != null)
             {
                 combat.Attacked -= OnAttacked;
@@ -58,15 +60,39 @@ namespace HullBreach.Game
             if (health != null) health.Damaged -= OnDamaged;
         }
 
-        private void ApplyRobot(RobotType robot)
+        private void OnRobotChanged(RobotType robot)
         {
-            baseColor = robot == RobotType.Techno ? TechnoColor : SamuraiColor;
-            if (body != null) body.color = baseColor;
+            activeSprites = robot == RobotType.Techno ? strelSprites : samuraiSprites;
+            ApplySprite();
+        }
+
+        private void ApplySprite()
+        {
+            if (body == null || activeSprites == null) return;
+            Sprite sprite = activeSprites.Get(side);
+            if (sprite != null) body.sprite = sprite;
         }
 
         private void OnDamaged(DamageInfo info, float dealt)
         {
-            flashTimer = 0.12f;
+            if (dealt > 0f) hurtTimer = HurtDuration;
+        }
+
+        private void LateUpdate()
+        {
+            if (player == null) return;
+            side = ArtCatalog.SideFromDirection(player.FacingDirection, side);
+            ApplySprite();
+            if (body == null) return;
+            if (hurtTimer > 0f)
+            {
+                hurtTimer -= Time.deltaTime;
+                body.color = HurtTint;
+            }
+            else
+            {
+                body.color = Color.white;
+            }
         }
 
         private void OnAttacked(Vector2 origin, Vector2 direction, RobotType robot)
@@ -89,24 +115,8 @@ namespace HullBreach.Game
         private void OnSkillUsed(RobotType robot, Vector2 origin)
         {
             float diameter = robot == RobotType.Samurai ? RobotDefinitions.Get(RobotType.Samurai).SkillRadius * 2f : 5f;
-            Color c = robot == RobotType.Samurai ? new Color(1f, 0.8f, 0.3f, 0.85f) : new Color(0.3f, 0.9f, 1f, 0.85f);
-            OneShotFx.Spawn(RuntimeSprites.Ring, (Vector3)origin, 0f, c, new Vector2(0.8f, 0.8f), new Vector2(diameter, diameter), 0.35f);
-        }
-
-        private void LateUpdate()
-        {
-            if (player != null && nub != null) nub.localPosition = (Vector3)(player.FacingDirection * 0.42f);
-
-            if (body == null) return;
-            if (flashTimer > 0f)
-            {
-                flashTimer -= Time.deltaTime;
-                body.color = Color.white;
-            }
-            else
-            {
-                body.color = baseColor;
-            }
+            Color color = robot == RobotType.Samurai ? new Color(1f, 0.8f, 0.3f, 0.85f) : new Color(0.3f, 0.9f, 1f, 0.85f);
+            OneShotFx.Spawn(RuntimeSprites.Ring, (Vector3)origin, 0f, color, new Vector2(0.8f, 0.8f), new Vector2(diameter, diameter), 0.35f);
         }
     }
 }

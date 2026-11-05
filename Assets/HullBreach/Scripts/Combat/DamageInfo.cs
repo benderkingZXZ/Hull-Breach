@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace HullBreach.Combat
 {
-    /// <summary>Описание одного попадания.</summary>
     public readonly struct DamageInfo
     {
         public readonly float Amount;

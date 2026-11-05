@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Theme
 {
-    /// <summary>Сопоставление игровых сущностей с ключами иконок (подменяются через UITheme: "icon.&lt;имя&gt;").</summary>
     public static class UIIcons
     {
         public static Sprite Get(string name) { return ProceduralSprites.Icon(name); }

@@ -4,13 +4,12 @@ using UnityEngine;
 
 namespace HullBreach.UI.Theme
 {
-    /// <summary>Плавно «накручивает» число в TMP-тексте (ресурсы, награды). Использует unscaled-время.</summary>
     public sealed class NumberTicker : MonoBehaviour
     {
         public TMP_Text Label;
         public string Prefix = "";
         public string Suffix = "";
-        public float Speed = 2.2f;   // доля полного пути в секунду, но не менее MinPerSecond
+        public float Speed = 2.2f;
         public float MinPerSecond = 40f;
 
         private float shown;
@@ -51,7 +50,6 @@ namespace HullBreach.UI.Theme
         }
     }
 
-    /// <summary>Форматирование чисел и времени для интерфейса.</summary>
     public static class UIFormat
     {
         public static string Number(int value)
@@ -65,7 +63,6 @@ namespace HullBreach.UI.Theme
             return (total / 60).ToString("00") + ":" + (total % 60).ToString("00");
         }
 
-        /// <summary>Русское склонение: 1 отсек, 2 отсека, 5 отсеков.</summary>
         public static string Plural(int n, string one, string few, string many)
         {
             int m100 = Mathf.Abs(n) % 100;

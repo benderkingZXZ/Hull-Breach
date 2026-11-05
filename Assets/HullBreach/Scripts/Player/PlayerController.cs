@@ -6,10 +6,6 @@ using HullBreach.Data;
 
 namespace HullBreach.Player
 {
-    /// <summary>
-    /// Движение, смена робота и состояние игрока. Не содержит UI-логики.
-    /// UI вызывает SetMoveInput(Vector2) из виртуального стика.
-    /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Health))]
     public class PlayerController : MonoBehaviour
@@ -28,7 +24,6 @@ namespace HullBreach.Player
 
         public event Action<RobotType> RobotChanged;
         public event Action<PlayerStats> StatsApplied;
-        /// <summary>Робот погиб (дублирует Health.Died для удобства).</summary>
         public event Action Died;
 
         public Health Health { get { EnsureComponents(); return health; } }
@@ -98,7 +93,6 @@ namespace HullBreach.Player
             FacingDirection = input.normalized;
         }
 
-        /// <summary>Вектор движения от виртуального стика; длина > 1 обрезается.</summary>
         public void SetMoveInput(Vector2 direction)
         {
             moveInput = direction;
@@ -114,13 +108,11 @@ namespace HullBreach.Player
             }
         }
 
-        /// <summary>Направление взгляда/атаки (используется автонаведением).</summary>
         public void SetFacing(Vector2 direction)
         {
             if (direction.sqrMagnitude > 0.0001f) FacingDirection = direction.normalized;
         }
 
-        /// <summary>Применяет робота и рассчитанные характеристики.</summary>
         public void ApplyRobot(RobotType type, PlayerStats newStats, bool keepHealthRatio)
         {
             EnsureComponents();
@@ -140,7 +132,6 @@ namespace HullBreach.Player
             transform.position = position;
         }
 
-        /// <summary>Подготовка к новому кораблю: перенос в позицию, оживление мёртвого, опционально полное лечение.</summary>
         public void ResetForShip(Vector3 position, bool restoreFullHealth)
         {
             EnsureComponents();

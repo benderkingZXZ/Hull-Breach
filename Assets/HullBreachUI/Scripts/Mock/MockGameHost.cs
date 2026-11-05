@@ -7,12 +7,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Mock
 {
-    /// <summary>
-    /// ЗАГЛУШКА игрового модуля, чтобы проверять интерфейс без бэкенда, комнат, врагов и арта.
-    /// Реализует все контракты UI и имитирует цикл «корабль → комнаты → награда → следующий корабль».
-    /// Это НЕ игровая логика проекта: числа условные, ничего не сохраняется на диск.
-    /// Использует только неизменяемые данные бэкенда (каталоги и модели из HullBreach.Data).
-    /// </summary>
     public sealed class MockGameHost : MonoBehaviour,
         IGameFlowService, IProgressionService, IModuleService, ICombatFeed, ICombatInputSink
     {
@@ -24,7 +18,6 @@ namespace HullBreach.UI.Mock
             "Танкер «Горизонт»", "Эсминец «Клинок»", "Крейсер «Молох»", "Транспорт «Вега»"
         };
 
-        // ---- Состояние потока
         private GameState state = GameState.MainMenu;
         private ShipDefinition selectedShip;
         private EntryPointType selectedEntry;
@@ -35,7 +28,6 @@ namespace HullBreach.UI.Mock
         private int stage;
         private List<ShipDefinition> options = new List<ShipDefinition>();
 
-        // ---- Прогресс
         private int resources = 250;
         private RobotType robot = RobotType.Samurai;
         private int victories;
@@ -43,11 +35,9 @@ namespace HullBreach.UI.Mock
         private int bestShips;
         private readonly int[] upgradeLevels = new int[2];
 
-        // ---- Модули
         private readonly List<ModuleInstance> owned = new List<ModuleInstance>();
         private readonly Dictionary<ModuleId, float> moduleReadyTime = new Dictionary<ModuleId, float>();
 
-        // ---- Бой
         private bool running;
         private float health;
         private float maxHealth = 100f;
@@ -78,8 +68,6 @@ namespace HullBreach.UI.Mock
             s.IsMock = true;
             return s;
         }
-
-        // ================================================================== IGameFlowService
 
         public GameState CurrentState { get { return state; } }
         public ShipDefinition SelectedShip { get { return selectedShip; } }
@@ -224,8 +212,6 @@ namespace HullBreach.UI.Mock
             return true;
         }
 
-        // ================================================================== IProgressionService
-
         public int Resources { get { return resources; } }
         public RobotType SelectedRobot { get { return robot; } }
         public int Victories { get { return victories; } }
@@ -287,8 +273,6 @@ namespace HullBreach.UI.Mock
             if (rc != null) rc(resources);
         }
 
-        // ================================================================== IModuleService
-
         public IReadOnlyList<ModuleInstance> OwnedModules { get { return owned; } }
         public event Action OwnedModulesChanged;
         public event Action<ModuleInstance> ActiveModuleUsed;
@@ -308,8 +292,6 @@ namespace HullBreach.UI.Mock
             }
             return 0f;
         }
-
-        // ================================================================== ICombatFeed
 
         public float CurrentHealth { get { return health; } }
         public float MaxHealth { get { return maxHealth; } }
@@ -359,8 +341,6 @@ namespace HullBreach.UI.Mock
             return true;
         }
 
-        // ================================================================== ICombatInputSink
-
         public Vector2 LastMoveInput { get { return moveInput; } }
         public void SetMoveInput(Vector2 direction) { moveInput = direction; }
         public void SetAttackHeld(bool held) { attackHeld = held && state == GameState.Combat; }
@@ -370,7 +350,6 @@ namespace HullBreach.UI.Mock
         {
             if (state != GameState.Combat || !running) return false;
 
-            // активные модули срабатывают вместе с навыком, как в бэкенде
             for (int i = 0; i < owned.Count; i++)
             {
                 ModuleInstance m = owned[i];
@@ -388,8 +367,6 @@ namespace HullBreach.UI.Mock
             for (int k = 0; k < 3; k++) KillEnemy();
             return true;
         }
-
-        // ================================================================== Имитация боя
 
         private void Update()
         {
@@ -530,8 +507,6 @@ namespace HullBreach.UI.Mock
             SetState(GameState.Reward);
         }
 
-        // ================================================================== Генерация тестовых данных
-
         private void BuildOptions()
         {
             options = new List<ShipDefinition>();
@@ -573,8 +548,6 @@ namespace HullBreach.UI.Mock
             return new RunSummary(won, robot, shipsCaptured, roomsClearedTotal, enemiesKilledTotal, runResources,
                 Time.time - runStartTime, new List<ModuleInstance>(owned));
         }
-
-        // ================================================================== Отладка (кнопки MockDebugPanel)
 
         public void DebugDamage(float amount) { if (state == GameState.Combat && running) TakeDamage(amount); }
         public void DebugKillEnemies() { if (state == GameState.Combat && running) { while (enemies > 0) KillEnemy(); } }

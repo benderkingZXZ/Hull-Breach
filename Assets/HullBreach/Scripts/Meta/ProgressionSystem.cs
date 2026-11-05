@@ -5,10 +5,6 @@ using HullBreach.Persistence;
 
 namespace HullBreach.Meta
 {
-    /// <summary>
-    /// Постоянный прогресс: ресурсы, уровни улучшений здоровья/урона, выбранный робот, статистика.
-    /// Ресурсы и улучшения сохраняются между забегами и сессиями; смерть их не обнуляет.
-    /// </summary>
     public class ProgressionSystem : MonoBehaviour
     {
         [SerializeField] private SaveSystem saveSystem;
@@ -49,7 +45,6 @@ namespace HullBreach.Meta
             if (data != null) Save();
         }
 
-        /// <summary>Программная настройка вместо инспектора.</summary>
         public void Configure(SaveSystem newSaveSystem)
         {
             saveSystem = newSaveSystem;
@@ -71,7 +66,6 @@ namespace HullBreach.Meta
             data = EnsureSaveSystem().Load();
         }
 
-        /// <summary>Явная (повторная) загрузка с диска.</summary>
         public void Load()
         {
             data = EnsureSaveSystem().Load();
@@ -85,8 +79,6 @@ namespace HullBreach.Meta
             return EnsureSaveSystem().Save(data);
         }
 
-        // ---------- Ресурсы ----------
-
         public void AddResources(int amount)
         {
             if (amount <= 0) return;
@@ -94,8 +86,6 @@ namespace HullBreach.Meta
             data.Resources += amount;
             ResourcesChanged?.Invoke(data.Resources);
         }
-
-        // ---------- Улучшения ----------
 
         public int GetMaxUpgradeLevel() { return maxLevel; }
 
@@ -105,7 +95,6 @@ namespace HullBreach.Meta
             return type == UpgradeType.Health ? data.HealthLevel : data.DamageLevel;
         }
 
-        /// <summary>Цена следующего уровня или -1, если достигнут максимум.</summary>
         public int GetUpgradeCost(UpgradeType type)
         {
             int level = GetUpgradeLevel(type);
@@ -133,13 +122,9 @@ namespace HullBreach.Meta
             return true;
         }
 
-        /// <summary>Плоский бонус к здоровью от прокачки.</summary>
         public float GetBonusHealth() { return GetUpgradeLevel(UpgradeType.Health) * healthPerLevel; }
 
-        /// <summary>Множитель урона от прокачки (1.0 = без бонуса).</summary>
         public float GetDamageMultiplier() { return 1f + GetUpgradeLevel(UpgradeType.Damage) * damageBonusPerLevel; }
-
-        // ---------- Робот и статистика ----------
 
         public void SetSelectedRobot(RobotType robot)
         {
@@ -150,7 +135,6 @@ namespace HullBreach.Meta
             Save();
         }
 
-        /// <summary>Фиксирует завершение забега (смерть, победа или выход) и сохраняет прогресс.</summary>
         public void RegisterRunEnded(bool victory, int shipsCaptured)
         {
             EnsureLoaded();
@@ -160,7 +144,6 @@ namespace HullBreach.Meta
             Save();
         }
 
-        /// <summary>Полный сброс прогресса (кнопка «Сбросить прогресс» в настройках UI).</summary>
         public void ResetAllProgress()
         {
             EnsureSaveSystem().DeleteSave();

@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Hud
 {
-    /// <summary>Пул всплывающих чисел («-12», «+5», «ЩИТ»). Без аллокаций во время боя: 24 текста переиспользуются по кругу.</summary>
     public sealed class FloatingTextLayer : MonoBehaviour
     {
         private sealed class Item
@@ -65,7 +64,6 @@ namespace HullBreach.UI.Hud
             it.Text.gameObject.SetActive(true);
         }
 
-        /// <summary>Мировая точка → локальная позиция слоя. false, если камеры нет или точка за камерой.</summary>
         public bool TryWorldToLocal(Camera cam, Vector3 world, out Vector2 local)
         {
             local = Vector2.zero;

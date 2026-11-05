@@ -12,18 +12,11 @@ using UnityEngine;
 
 namespace HullBreach.Game
 {
-    /// <summary>
-    /// ЕДИНСТВЕННЫЙ объект, нужный в сцене: собирает из кода весь игровой мир и связывает бэкенд с интерфейсом.
-    /// Камера → шаблоны (снаряды, игрок, враги, комнаты) → системы бэкенда (GameCore) → UI (HullBreachUIBootstrap).
-    /// Когда появятся настоящие префабы и сцена, этот класс можно заменить обычной сценой: контракты не меняются
-    /// (см. docs/GAME_INTEGRATION.md).
-    /// </summary>
     [DefaultExecutionOrder(-200)]
     public sealed class GameBootstrap : MonoBehaviour
     {
         [SerializeField] private bool buildUi = true;
         [SerializeField] private bool enemyHealthBars = true;
-        [Tooltip("Расстояние между комнатами по X (комната вместе с коридором занимает около 32 единиц).")]
         [SerializeField] private float roomSpacing = 60f;
         [SerializeField] private float cameraSize = 6.5f;
 
@@ -45,7 +38,6 @@ namespace HullBreach.Game
             Camera worldCamera = CreateCamera();
             follow = worldCamera.GetComponent<CameraFollow2D>();
 
-            // Шаблоны лежат под неактивным родителем: их компоненты не запускаются, клоны оживают на сцене.
             GameObject templatesGo = new GameObject("PrototypeTemplates");
             templatesGo.SetActive(false);
             Transform templates = templatesGo.transform;
@@ -53,17 +45,18 @@ namespace HullBreach.Game
             GameObject roomsGo = new GameObject("RoomsRoot");
             roomsGo.transform.position = Vector3.zero;
 
-            Projectile playerShot = PrototypeFactory.CreateProjectile(templates, "PlayerShot", new Color(0.4f, 0.92f, 1f, 1f), 0.34f);
-            Projectile enemyShot = PrototypeFactory.CreateProjectile(templates, "EnemyShot", new Color(1f, 0.45f, 0.25f, 1f), 0.4f);
+            Projectile playerShot = PrototypeFactory.CreateProjectile(templates, "PlayerShot", ArtSpecs.StrelShotPath, ArtSpecs.StrelShotSize);
+            Projectile gunnerShot = PrototypeFactory.CreateProjectile(templates, "GunnerShot", ArtSpecs.GunnerPulsePath, ArtSpecs.GunnerPulseSize);
+            Projectile miniBossShot = PrototypeFactory.CreateProjectile(templates, "MiniBossShot", ArtSpecs.MiniBossPulsePath, ArtSpecs.MiniBossPulseSize);
+            Projectile nexusShot = PrototypeFactory.CreateProjectile(templates, "NexusShot", ArtSpecs.NexusPulsePath, ArtSpecs.NexusPulseSize);
 
             PlayerController player = PrototypeFactory.CreatePlayer(playerShot);
             player.gameObject.SetActive(true);
             PlayerCombat combat = player.GetComponent<PlayerCombat>();
 
-            EnemyPrefabEntry[] enemies = PrototypeFactory.CreateEnemyEntries(templates, enemyShot, enemyHealthBars);
+            EnemyPrefabEntry[] enemies = PrototypeFactory.CreateEnemyEntries(templates, gunnerShot, miniBossShot, nexusShot, enemyHealthBars);
             RoomTemplateSet[] roomSets = RoomTemplateFactory.CreateTemplateSets(templates);
 
-            // Системы бэкенда на одном объекте. Объект выключен, пока не настроены все ссылки.
             GameObject core = new GameObject("GameCore");
             core.SetActive(false);
             SaveSystem save = core.AddComponent<SaveSystem>();
@@ -81,6 +74,9 @@ namespace HullBreach.Game
             GameStateManager state = core.AddComponent<GameStateManager>();
             state.Configure(player, progression, modules, sector, shipRun);
             core.SetActive(true);
+
+            AudioManager audio = new GameObject("AudioManager").AddComponent<AudioManager>();
+            audio.Bind(state, shipRun, player, combat);
 
             follow.SetTarget(player.transform);
             shipRun.RoomEntered += OnRoomEntered;

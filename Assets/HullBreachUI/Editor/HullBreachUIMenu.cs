@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.EditorTools
 {
-    /// <summary>Пункты меню Hull Breach → UI: добавить загрузчик интерфейса в сцену и создать песочницу с заглушкой.</summary>
     public static class HullBreachUIMenu
     {
         [MenuItem("Hull Breach/UI/Add UI Bootstrap To Scene")]

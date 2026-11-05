@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>Пауза в бою: продолжить, настройки, покинуть забег. Пока окно открыто, Time.timeScale = 0.</summary>
     public sealed class PauseMenuUI : UIModal
     {
         protected override void BuildContent(RectTransform content)

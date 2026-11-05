@@ -3,10 +3,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Theme
 {
-    /// <summary>
-    /// Визуал выбираемой карточки: подсветка рамки, увеличение при выборе и появление со сдвигом по времени.
-    /// Масштаб карточки принадлежит только этому компоненту.
-    /// </summary>
     [RequireComponent(typeof(CanvasGroup))]
     public sealed class CardVisual : MonoBehaviour
     {

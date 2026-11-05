@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Theme
 {
-    /// <summary>Доступ к шрифтам и подменам спрайтов из UITheme.</summary>
     public static class UIAssets
     {
         private static UITheme theme;

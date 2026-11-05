@@ -1,8 +1,12 @@
 name: Build Android APK
 
 # Автосборка APK при каждом push в main/master и по кнопке «Run workflow».
-# Готовый APK: вкладка Releases (прямая ссылка на скачивание) и Actions → Artifacts.
-# Первый запуск требует секретов UNITY_LICENSE, UNITY_EMAIL, UNITY_PASSWORD (см. README.md).
+# Два режима (определяются автоматически):
+#   1) ZIP-режим: в корне репозитория лежит файл HullBreach_Game.zip -> проект распаковывается в ./project
+#      (удобно, когда сайт GitHub не принимает загрузку многих файлов и папок);
+#   2) обычный режим: проект Unity (Assets, Packages, ProjectSettings) лежит в корне репозитория.
+# Готовый APK: вкладка Releases (прямая ссылка) и Actions -> Artifacts.
+# Нужны секреты UNITY_LICENSE, UNITY_EMAIL, UNITY_PASSWORD (см. README.md).
 
 on:
   push:
@@ -41,7 +45,7 @@ jobs:
           missing=0
           for name in UNITY_LICENSE UNITY_EMAIL UNITY_PASSWORD; do
             if [ -z "${!name}" ]; then
-              echo "::error title=Secret is missing::GitHub secret $name is not set. Settings -> Secrets and variables -> Actions. See README.md, section 'Unity license'."
+              echo "::error title=Secret is missing::GitHub secret $name is not set. Settings -> Secrets and variables -> Actions. After adding secrets use Re-run all jobs. See README.md."
               missing=1
             fi
           done
@@ -49,6 +53,33 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Find Unity project (unpack zip if present)
+        run: |
+          set -e
+          if [ -f HullBreach_Game.zip ]; then
+            echo "ZIP mode: unpacking HullBreach_Game.zip into ./project"
+            rm -rf _unzip project
+            mkdir _unzip project
+            unzip -q HullBreach_Game.zip -d _unzip
+            found=$(find _unzip -maxdepth 3 -type d -name Assets | head -n 1)
+            if [ -z "$found" ]; then
+              echo "::error title=Bad zip::Folder Assets was not found inside HullBreach_Game.zip"
+              exit 1
+            fi
+            cp -a "$(dirname "$found")"/. project/
+            rm -rf _unzip
+            echo "PROJECT_DIR=project" >> "$GITHUB_ENV"
+            echo "PROJECT_PREFIX=project/" >> "$GITHUB_ENV"
+          else
+            echo "Repo mode: Unity project is expected in the repository root"
+            if [ ! -d Assets ]; then
+              echo "::error title=Project not found::Upload HullBreach_Game.zip to the repository root (or put the Unity project there)."
+              exit 1
+            fi
+            echo "PROJECT_DIR=." >> "$GITHUB_ENV"
+            echo "PROJECT_PREFIX=" >> "$GITHUB_ENV"
+          fi
 
       - name: Free disk space
         uses: jlumbroso/free-disk-space@v1.3.1
@@ -64,29 +95,27 @@ jobs:
       - name: Cache Unity Library
         uses: actions/cache@v4
         with:
-          path: Library
-          key: Library-Android-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}
+          path: ${{ env.PROJECT_PREFIX }}Library
+          key: "Library-Android-${{ hashFiles(format('{0}Packages/manifest.json', env.PROJECT_PREFIX), format('{0}ProjectSettings/ProjectVersion.txt', env.PROJECT_PREFIX)) }}"
           restore-keys: |
             Library-Android-
 
-      # Шаг 1: отдельный запуск Unity, который импортирует TextMeshPro Essentials (без них не работает текст).
-      # Импорт пакета асинхронный, поэтому manualExit: true (без -quit) — CiPrepare.Run сам вызовет Exit после импорта.
-      # timeout-minutes — страховка, чтобы шаг не завис на 2 часа, если Unity так и не завершится.
+      # Шаг 1: отдельный запуск Unity, который импортирует TextMeshPro Essentials (без них не работает текст)
       - name: Prepare project (TextMeshPro)
         uses: game-ci/unity-builder@v4
-        timeout-minutes: 25
         with:
+          projectPath: ${{ env.PROJECT_DIR }}
           targetPlatform: Android
           unityVersion: auto
           versioning: None
           allowDirtyBuild: true
-          manualExit: true
           buildMethod: HullBreach.GameEditor.CiPrepare.Run
 
       # Шаг 2: создание сцены, настройки Android и сборка APK -> build/Android/HullBreach.apk
       - name: Build Android APK
         uses: game-ci/unity-builder@v4
         with:
+          projectPath: ${{ env.PROJECT_DIR }}
           targetPlatform: Android
           unityVersion: auto
           versioning: None
@@ -96,15 +125,15 @@ jobs:
 
       - name: Check APK
         run: |
-          ls -la build/Android || true
-          test -f build/Android/HullBreach.apk
-          echo "APK size: $(du -h build/Android/HullBreach.apk | cut -f1)"
+          ls -la "${PROJECT_PREFIX}build/Android" || true
+          test -f "${PROJECT_PREFIX}build/Android/HullBreach.apk"
+          echo "APK size: $(du -h "${PROJECT_PREFIX}build/Android/HullBreach.apk" | cut -f1)"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: HullBreach-apk-${{ github.run_number }}
-          path: build/Android/HullBreach.apk
+          path: ${{ env.PROJECT_PREFIX }}build/Android/HullBreach.apk
           if-no-files-found: error
           retention-days: 30
 
@@ -115,7 +144,7 @@ jobs:
           target_commitish: ${{ github.sha }}
           name: Hull Breach APK #${{ github.run_number }}
           prerelease: true
-          files: build/Android/HullBreach.apk
+          files: ${{ env.PROJECT_PREFIX }}build/Android/HullBreach.apk
           body: |
             Автосборка #${{ github.run_number }} из коммита ${{ github.sha }}.
             Скачайте HullBreach.apk, разрешите установку из неизвестных источников и установите на Android 7.0+.

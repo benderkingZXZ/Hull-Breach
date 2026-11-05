@@ -5,10 +5,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Hud
 {
-    /// <summary>
-    /// Полоса здоровья робота: основная полоса быстро реагирует, «хвост» урона уходит медленнее,
-    /// тонкая голубая полоса снизу — щит. При уроне рамка вспыхивает и дрожит.
-    /// </summary>
     public sealed class HealthBarView : MonoBehaviour
     {
         private RectTransform rect;
@@ -92,7 +88,6 @@ namespace HullBreach.UI.Hud
             shieldAmount = Mathf.Max(0f, amount);
         }
 
-        /// <summary>Мгновенно выставить значения без анимации (при показе HUD).</summary>
         public void Snap()
         {
             shownRatio = current / max;

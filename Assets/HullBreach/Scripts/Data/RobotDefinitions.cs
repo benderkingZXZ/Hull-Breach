@@ -2,7 +2,6 @@ using HullBreach.Core;
 
 namespace HullBreach.Data
 {
-    /// <summary>Базовые характеристики робота (до прокачки и модулей).</summary>
     public sealed class RobotDefinition
     {
         public RobotType Type { get; }
@@ -11,7 +10,6 @@ namespace HullBreach.Data
         public float BaseDamage { get; }
         public float MoveSpeed { get; }
         public float AttackInterval { get; }
-        /// <summary>Дальность автонаведения и атаки (у самурая — досягаемость клинка).</summary>
         public float AttackRange { get; }
         public bool IsRanged { get; }
         public string SkillName { get; }
@@ -34,11 +32,11 @@ namespace HullBreach.Data
     public static class RobotDefinitions
     {
         private static readonly RobotDefinition samurai = new RobotDefinition(
-            RobotType.Samurai, "Самурай", 120f, 14f, 5.5f, 0.45f, 2.4f, false,
+            RobotType.Samurai, "Сэм", 120f, 14f, 5.5f, 0.45f, 2.4f, false,
             "Буря клинков", 6f, 2.5f, 3.2f, 0);
 
         private static readonly RobotDefinition techno = new RobotDefinition(
-            RobotType.Techno, "Техно-юнит", 90f, 9f, 5.0f, 0.35f, 7.5f, true,
+            RobotType.Techno, "Стрел", 90f, 9f, 5.0f, 0.35f, 7.5f, true,
             "Перегруз-залп", 8f, 1.0f, 0f, 12);
 
         public static RobotDefinition Get(RobotType type)

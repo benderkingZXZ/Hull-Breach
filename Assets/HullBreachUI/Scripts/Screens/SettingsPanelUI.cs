@@ -7,10 +7,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>
-    /// Настройки интерфейса: громкость, вибрация, числа урона, режим стика, размер и прозрачность кнопок.
-    /// «Сбросить прогресс» доступен только вне забега (вызывает IProgressionService.ResetAllProgress).
-    /// </summary>
     public sealed class SettingsPanelUI : UIModal
     {
         private Slider volume;

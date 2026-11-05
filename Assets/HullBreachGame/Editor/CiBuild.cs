@@ -10,11 +10,6 @@ using HullBreach.Game;
 
 namespace HullBreach.GameEditor
 {
-    /// <summary>
-    /// Шаг 2 сборки в CI: создаёт сцену Main (один объект GameBootstrap), настраивает Player Settings для Android
-    /// и собирает APK в build/Android/HullBreach.apk.
-    /// Запуск: -executeMethod HullBreach.GameEditor.CiBuild.BuildAndroid [-hbVersion 1.0.5] [-hbVersionCode 5] [-includeArmv7]
-    /// </summary>
     public static class CiBuild
     {
         public const string ScenePath = "Assets/Scenes/Main.unity";
@@ -30,7 +25,6 @@ namespace HullBreach.GameEditor
                 int versionCode = GetIntArg(args, "-hbVersionCode", 1);
                 bool includeArmv7 = HasFlag(args, "-includeArmv7");
 
-                // Запасной путь: если шаг подготовки не отработал, пробуем импортировать TMP здесь
                 CiPrepare.ImportTmpEssentials();
 
                 EnsureMainScene();
@@ -61,7 +55,6 @@ namespace HullBreach.GameEditor
             }
         }
 
-        /// <summary>Создаёт и сохраняет сцену Main: пустая сцена и один объект GameBootstrap (остальное строится в рантайме).</summary>
         public static void EnsureMainScene()
         {
             Directory.CreateDirectory("Assets/Scenes");
@@ -93,7 +86,6 @@ namespace HullBreach.GameEditor
             PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.Android, false);
             PlayerSettings.SetGraphicsAPIs(BuildTarget.Android, new[] { GraphicsDeviceType.OpenGLES3 });
 
-            // Горизонтальная ориентация, оба поворота
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.AutoRotation;
             PlayerSettings.allowedAutorotateToPortrait = false;
             PlayerSettings.allowedAutorotateToPortraitUpsideDown = false;
@@ -105,8 +97,6 @@ namespace HullBreach.GameEditor
             EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
             EditorUserBuildSettings.buildAppBundle = false;
         }
-
-        // ---------------------------------------------------------------- Аргументы командной строки
 
         private static string GetArg(string[] args, string name, string fallback)
         {
@@ -127,8 +117,6 @@ namespace HullBreach.GameEditor
                 if (args[i] == name) return true;
             return false;
         }
-
-        // ---------------------------------------------------------------- Меню для локальной работы
 
         [MenuItem("Hull Breach/Game/Create Main Scene")]
         private static void CreateSceneFromMenu()

@@ -3,7 +3,6 @@ using UnityEngine.EventSystems;
 
 namespace HullBreach.UI.Theme
 {
-    /// <summary>Лёгкая реакция на нажатие: элемент слегка уменьшается, пока палец на нём.</summary>
     public sealed class PressScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
     {
         public float PressedScale = 0.95f;

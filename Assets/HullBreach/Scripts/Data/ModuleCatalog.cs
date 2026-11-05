@@ -12,7 +12,6 @@ namespace HullBreach.Data
 
         public ModuleId Id { get; }
         public string DisplayName { get; }
-        /// <summary>{0}=основное значение, {1}=вторичное, {2}=перезарядка.</summary>
         public string DescriptionTemplate { get; }
         public bool IsActive { get; }
 
@@ -33,7 +32,6 @@ namespace HullBreach.Data
         }
     }
 
-    /// <summary>Конкретный модуль определённой редкости (предложение или собранный).</summary>
     public sealed class ModuleInstance
     {
         public ModuleDefinition Definition { get; }

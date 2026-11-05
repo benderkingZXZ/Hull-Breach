@@ -10,14 +10,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Framework
 {
-    /// <summary>
-    /// Маршрутизатор экранов. Слушает IGameFlowService.StateChanged и показывает экран, соответствующий состоянию.
-    /// Гарантии:
-    ///  • одновременно виден один основной экран (старый полностью скрывается до показа нового);
-    ///  • запросы во время перехода не теряются — побеждает последний;
-    ///  • при любой смене состояния закрываются модальные окна и снимается пауза.
-    /// UI никогда не меняет состояние игры сам — только вызывает команды сервисов.
-    /// </summary>
     public sealed class UIManager : MonoBehaviour
     {
         private readonly Dictionary<ScreenId, UIScreen> screens = new Dictionary<ScreenId, UIScreen>();
@@ -43,8 +35,6 @@ namespace HullBreach.UI.Framework
         public bool IsPaused { get { return paused; } }
         public bool HasOpenModal { get { return modals.Count > 0; } }
 
-        // ------------------------------------------------------------------ Инициализация
-
         public void Initialize(UIServices svc, UIRootRefs rootRefs)
         {
             services = svc;
@@ -67,7 +57,6 @@ namespace HullBreach.UI.Framework
             UIFactory.Anchor(toast.Rect, 0.5f, 0f, 0.5f, 0f, 0f, 150f, 900f, 84f);
         }
 
-        /// <summary>Подписаться на состояние игры и показать экран текущего состояния.</summary>
         public void Begin()
         {
             services.Flow.StateChanged += HandleStateChanged;
@@ -100,8 +89,6 @@ namespace HullBreach.UI.Framework
             if (paused) Time.timeScale = savedTimeScale;
             paused = false;
         }
-
-        // ------------------------------------------------------------------ Переходы между экранами
 
         private void HandleStateChanged(GameState previous, GameState next)
         {
@@ -163,8 +150,6 @@ namespace HullBreach.UI.Framework
             switchRoutine = null;
         }
 
-        // ------------------------------------------------------------------ Модальные окна, пауза, тосты
-
         internal void RegisterModal(UIModal modal)
         {
             if (!modals.Contains(modal)) modals.Add(modal);
@@ -198,7 +183,6 @@ namespace HullBreach.UI.Framework
             pauseMenu.Open();
         }
 
-        /// <summary>Пауза через Time.timeScale (бэкенд его не трогает и не мешает паузе).</summary>
         public void SetPaused(bool value)
         {
             if (value == paused) return;
@@ -219,9 +203,6 @@ namespace HullBreach.UI.Framework
             if (toast != null) toast.Show(message, warning ? UIColors.Amber : UIColors.Cyan, 2.2f);
         }
 
-        // ------------------------------------------------------------------ Кнопка «Назад» и жизненный цикл
-
-        /// <summary>Вызывается при нажатии системной кнопки «Назад» (Esc в редакторе). Можно вызвать из своего InputAction.</summary>
         public void HandleBack()
         {
             if (modals.Count > 0)

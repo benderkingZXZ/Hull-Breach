@@ -5,10 +5,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Mock
 {
-    /// <summary>
-    /// Отладочные кнопки справа по центру: видны только в бою и только с заглушкой MockGameHost.
-    /// Нужны, чтобы вручную вызвать урон, зачистку комнаты, смерть и проверить HUD и экраны.
-    /// </summary>
     public sealed class MockDebugPanel : MonoBehaviour
     {
         private MockGameHost host;
@@ -16,7 +12,6 @@ namespace HullBreach.UI.Mock
 
         public static MockDebugPanel Create(UIRootRefs root, MockGameHost host)
         {
-            // Корневой объект всегда активен (на нём Update); кнопки лежат в дочернем контейнере.
             RectTransform holder = UIFactory.Rect("MockDebug", root.OverlayLayer);
             UIFactory.Stretch(holder);
             MockDebugPanel p = holder.gameObject.AddComponent<MockDebugPanel>();

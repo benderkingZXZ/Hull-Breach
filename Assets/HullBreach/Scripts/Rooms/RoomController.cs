@@ -7,10 +7,6 @@ using HullBreach.Enemies;
 
 namespace HullBreach.Rooms
 {
-    /// <summary>
-    /// Компонент корня префаба-шаблона комнаты. Хранит точки спавна, двери и выход, отслеживает зачистку.
-    /// Жизненный цикл: Initialize → Enter (двери закрыты) → RegisterEnemy... → BeginCombat → Cleared (двери открыты).
-    /// </summary>
     public class RoomController : MonoBehaviour
     {
         [SerializeField] private RoomRole role = RoomRole.Normal;
@@ -37,7 +33,6 @@ namespace HullBreach.Rooms
         public event Action<RoomController> Cleared;
         public event Action<RoomController> ExitReached;
         public event Action<EnemyController> EnemyKilled;
-        /// <summary>true — двери открыты.</summary>
         public event Action<bool> DoorsStateChanged;
 
         public int Index { get; private set; }
@@ -61,7 +56,6 @@ namespace HullBreach.Rooms
             get { return new Bounds(transform.position + (Vector3)boundsOffset, new Vector3(boundsSize.x, boundsSize.y, 1f)); }
         }
 
-        /// <summary>Программная настройка вместо инспектора (процедурные шаблоны комнат).</summary>
         public void Configure(RoomRole newRole, Transform newPlayerSpawn, Transform[] newEnemySpawns, Transform newBossSpawn,
             GameObject[] newDoorBlockers, RoomExitTrigger newExitTrigger, GameObject newReactor, Vector2 newBoundsSize)
         {
@@ -75,7 +69,6 @@ namespace HullBreach.Rooms
             boundsSize = newBoundsSize;
         }
 
-        /// <summary>Вызывается генератором сразу после создания комнаты.</summary>
         public void Initialize(int index)
         {
             Index = index;
@@ -86,7 +79,6 @@ namespace HullBreach.Rooms
             SetDoorsOpen(false);
         }
 
-        /// <summary>Игрок вошёл: комната становится активной, двери закрываются.</summary>
         public void Enter()
         {
             if (State != RoomState.Inactive) return;
@@ -102,7 +94,6 @@ namespace HullBreach.Rooms
             enemy.Died += HandleEnemyDied;
         }
 
-        /// <summary>Вызывается после спавна всех врагов. Если врагов нет — комната сразу зачищена.</summary>
         public void BeginCombat()
         {
             combatBegun = true;
@@ -137,7 +128,6 @@ namespace HullBreach.Rooms
             DoorsStateChanged?.Invoke(open);
         }
 
-        /// <summary>Вызывается RoomExitTrigger, когда игрок вошёл в открытый выход.</summary>
         public void NotifyExitReached()
         {
             if (State != RoomState.Cleared || exitNotified || role != RoomRole.Normal) return;
@@ -145,7 +135,6 @@ namespace HullBreach.Rooms
             ExitReached?.Invoke(this);
         }
 
-        /// <summary>Проверка корректности настройки префаба (используется генератором и из контекстного меню).</summary>
         public bool Validate(out string error)
         {
             if (playerSpawnPoint == null) { error = name + ": не задан playerSpawnPoint"; return false; }

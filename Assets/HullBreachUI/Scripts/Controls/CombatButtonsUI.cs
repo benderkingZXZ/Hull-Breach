@@ -10,10 +10,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Controls
 {
-    /// <summary>
-    /// Кнопки справа: атака (удерживать — стрелять/бить с автонаведением) и навык с радиальным индикатором
-    /// перезарядки. Над атакой — значки активных модулей с перезарядкой (кнопка навыка запускает и их).
-    /// </summary>
     public sealed class CombatButtonsUI : MonoBehaviour
     {
         private sealed class Badge
@@ -60,7 +56,6 @@ namespace HullBreach.UI.Controls
         {
             group = container.gameObject.AddComponent<CanvasGroup>();
 
-            // ---- Атака (большая, в углу под большим пальцем)
             attackRect = UIFactory.Rect("Attack", container);
             UIFactory.Anchor(attackRect, 1f, 0f, 0.5f, 0.5f, -150f, 150f, 214f, 214f);
             UIFactory.AddImage(attackRect.gameObject, ProceduralSprites.Circle, UIColors.WithAlpha(UIColors.Hull, 0.78f), Image.Type.Simple, true);
@@ -72,7 +67,6 @@ namespace HullBreach.UI.Controls
             attackButton.Pressed += OnAttackPressed;
             attackButton.Released += OnAttackReleased;
 
-            // ---- Навык (выше и левее: дуга большого пальца)
             skillRect = UIFactory.Rect("Skill", container);
             UIFactory.Anchor(skillRect, 1f, 0f, 0.5f, 0.5f, -372f, 262f, 156f, 156f);
             UIFactory.AddImage(skillRect.gameObject, ProceduralSprites.Circle, UIColors.WithAlpha(UIColors.Hull, 0.78f), Image.Type.Simple, true);
@@ -97,7 +91,6 @@ namespace HullBreach.UI.Controls
             skillButton = skillRect.gameObject.AddComponent<TouchButton>();
             skillButton.Pressed += OnSkillPressed;
 
-            // ---- Значки активных модулей над кнопкой атаки
             badgeColumn = UIFactory.Rect("ModuleBadges", container);
             UIFactory.Anchor(badgeColumn, 1f, 0f, 0.5f, 0f, -150f, 290f, 76f, 280f);
             UIFactory.VerticalGroup(badgeColumn, 8f, TextAnchor.LowerCenter);
@@ -120,7 +113,6 @@ namespace HullBreach.UI.Controls
             UISettings.Changed -= ApplySettings;
             if (modules != null) modules.OwnedModulesChanged -= RebuildBadges;
             if (feed != null) feed.RobotChanged -= HandleRobotChanged;
-            // кнопки сами отпустятся в TouchButton.OnDisable; на всякий случай гасим автоатаку
             if (input != null) input.SetAttackHeld(false);
         }
 
@@ -204,7 +196,6 @@ namespace HullBreach.UI.Controls
             if (feed == null || input == null) return;
             float dt = Time.unscaledDeltaTime;
 
-            // Автоатака: бэкенд сбрасывает флаг при деактивации игрока, поэтому подтверждаем каждый кадр.
             bool held = attackButton.IsHeld;
             if (held) input.SetAttackHeld(true);
 
@@ -216,7 +207,6 @@ namespace HullBreach.UI.Controls
             float attackScale = UISettings.ControlScale * (1f - 0.06f * attackPulse);
             attackRect.localScale = new Vector3(attackScale, attackScale, 1f);
 
-            // Навык: радиальная перезарядка и секунды
             float remaining = feed.SkillCooldownRemaining;
             skillOverlay.fillAmount = feed.SkillCooldownNormalized;
             bool onCooldown = remaining > 0.02f;
@@ -243,7 +233,6 @@ namespace HullBreach.UI.Controls
             float skillScale = UISettings.ControlScale * (skillButton.IsHeld ? 0.94f : 1f);
             skillRect.localScale = new Vector3(skillScale, skillScale, 1f);
 
-            // Активные модули
             for (int i = 0; i < badges.Count; i++)
             {
                 float n = modules.GetCooldownNormalized(badges[i].Id);

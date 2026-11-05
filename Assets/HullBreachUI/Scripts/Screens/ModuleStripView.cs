@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>Полоса иконок модулей забега с рамкой цвета редкости и индикатором перезарядки активных.</summary>
     public sealed class ModuleStripView
     {
         private struct Entry
@@ -47,7 +46,6 @@ namespace HullBreach.UI.Screens
             UIFactory.FitOneLine(emptyLabel, 14f, Mathf.Max(18f, tileSize * 0.38f));
         }
 
-        /// <summary>Перестроить плитки. null — взять текущие модули забега из сервиса.</summary>
         public void Refresh(IReadOnlyList<ModuleInstance> list)
         {
             if (list == null) list = modules != null ? modules.OwnedModules : null;
@@ -94,7 +92,6 @@ namespace HullBreach.UI.Screens
             entries.Add(e);
         }
 
-        /// <summary>Обновить индикаторы перезарядки (вызывать из Update экрана).</summary>
         public void Tick()
         {
             if (!showCooldowns || modules == null) return;

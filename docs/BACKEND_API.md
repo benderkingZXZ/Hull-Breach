@@ -262,3 +262,4 @@ gsm.OpenUpgrades(); progression.TryPurchaseUpgrade(UpgradeType.Health); gsm.Star
 |---|---|---|---|
 | 1.0 | 2026-10-22 | Первая фиксация | — |
 | 1.1 | 2026-10-29 | **Добавлены** (без изменения существующих) публичные методы программной настройки `Configure(...)` у `Health`, `PlayerCombat`, `EnemyController`, `EnemySpawner`, `RoomController`, `RoomExitTrigger`, `RoomGenerator`, `ShipRunManager`, `ModuleSystem`, `ProgressionSystem`, `GameStateManager` | Сборка мира из кода без префабов и инспектора (Assets/HullBreachGame), нужна для автосборки APK. Контракт для UI (раздел 3–12) не затронут |
+| 1.2 | 2026-11-05 | Аддитивно: `EnemyController.Fired` (событие выстрела), `EnemyPrefabEntry.finalShipBoss` (вариант мини-босса для корабля-босса, `EnemySpawner` выбирает его сам). Отображаемое имя Techno изменено на «Стрел», `RobotType` не менялся | Подключение арта и звуков (Assets/HullBreachGame). Контракт UI не затронут |

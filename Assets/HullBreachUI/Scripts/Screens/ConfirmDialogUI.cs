@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>Универсальное окно подтверждения («Улучшить?», «Покинуть забег?», «Выйти?»).</summary>
     public sealed class ConfirmDialogUI : UIModal
     {
         private TMP_Text title;

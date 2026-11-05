@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>Экран победы: уничтожение «Нексус-Прайм», итоги забега, возврат в меню.</summary>
     public sealed class VictoryScreenUI : RunEndScreenBase
     {
         public override ScreenId Id { get { return ScreenId.Victory; } }
@@ -16,7 +15,6 @@ namespace HullBreach.UI.Screens
 
         protected override void BuildExtra(RectTransform root)
         {
-            // Силуэт флагмана, перечёркнутый крестом: наглядный итог победы над боссом.
             RectTransform badge = UIFactory.Rect("BossDestroyed", root);
             UIFactory.Anchor(badge, 1f, 1f, 1f, 1f, 0f, -10f, 300f, 190f);
             badge.gameObject.AddComponent<AppearAnimation>();

@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>Главное меню: название, начало забега, прокачка, настройки, выход и выбор робота.</summary>
     public sealed class MainMenuUI : UIScreen
     {
         private sealed class RobotCardRefs
@@ -28,7 +27,6 @@ namespace HullBreach.UI.Screens
         {
             RectTransform root = (RectTransform)transform;
 
-            // ---- Название
             RectTransform titleBlock = UIFactory.Rect("TitleBlock", root);
             UIFactory.AnchorRange(titleBlock, 0f, 0.6f, 0.58f, 1f, 24f, 0f, 0f, 30f);
             titleBlock.gameObject.AddComponent<AppearAnimation>();
@@ -57,7 +55,6 @@ namespace HullBreach.UI.Screens
                 FontStyles.Normal, TextAlignmentOptions.TopLeft);
             UIFactory.AnchorStretchX(tag.rectTransform, 0f, 1f, 1f, 1f, -246f, 80f);
 
-            // ---- Кнопки
             RectTransform column = UIFactory.Rect("Buttons", root);
             UIFactory.Anchor(column, 0f, 0f, 0f, 0f, 24f, 24f, 600f, 500f);
             UIFactory.VerticalGroup(column, 18f, TextAnchor.LowerCenter);
@@ -72,7 +69,6 @@ namespace HullBreach.UI.Screens
             ButtonView quit = UIFactory.CreateButton(column, "Quit", UIStrings.Quit, ButtonStyle.Ghost, AskQuit, 30f, "close");
             UIFactory.AddLayout(quit.Rect, -1f, -1f, -1f, -1f, 80f, -1f);
 
-            // ---- Выбор робота
             RectTransform robotPanel = UIFactory.Rect("RobotPanel", root);
             UIFactory.AnchorRange(robotPanel, 0.54f, 0.1f, 1f, 0.72f, 0f, 30f, 0f, 0f);
 
@@ -88,7 +84,6 @@ namespace HullBreach.UI.Screens
             BuildRobotCard(row, 0, RobotType.Samurai);
             BuildRobotCard(row, 1, RobotType.Techno);
 
-            // ---- Кошелёк и статистика
             wallet = UIFactory.CreateWallet(root, "Wallet");
             UIFactory.Anchor(wallet.Rect, 1f, 1f, 1f, 1f, 0f, -10f, 320f, 60f);
 

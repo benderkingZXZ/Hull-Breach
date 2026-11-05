@@ -2,10 +2,8 @@ using HullBreach.Core;
 
 namespace HullBreach.UI.Framework
 {
-    /// <summary>Все тексты интерфейса в одном месте (задел под локализацию). Тексты данных (названия модулей и т.п.) приходят из бэкенда.</summary>
     public static class UIStrings
     {
-        /// <summary>Количество обычных кораблей в секторе (SectorMapSystem.RegularShipCount = 4). Используется только для подписей «N из 4».</summary>
         public const int SectorShipCount = 4;
 
         public const string GameTitle = "HULL BREACH";

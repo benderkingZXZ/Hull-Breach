@@ -4,10 +4,6 @@ using HullBreach.Core;
 
 namespace HullBreach.Combat
 {
-    /// <summary>
-    /// Здоровье, щит, неуязвимость и смерть. Общий компонент для игрока и врагов.
-    /// Расчёт урона: итог = Amount * (1 - damageReduction); сначала поглощается щитом.
-    /// </summary>
     public class Health : MonoBehaviour
     {
         [SerializeField] private Faction faction = Faction.Enemy;
@@ -22,9 +18,7 @@ namespace HullBreach.Combat
         private float invulnerableUntil;
         private float damageReduction;
 
-        /// <summary>(текущее, максимум).</summary>
         public event Action<float, float> HealthChanged;
-        /// <summary>(информация об уроне, фактически нанесённый урон после щита/снижения).</summary>
         public event Action<DamageInfo, float> Damaged;
         public event Action<Health, DamageInfo> Died;
 
@@ -33,7 +27,6 @@ namespace HullBreach.Combat
         public float CurrentHealth { get { EnsureInitialized(); return current; } }
         public float Normalized { get { return maxHealth > 0f ? CurrentHealth / maxHealth : 0f; } }
         public bool IsDead { get; private set; }
-        /// <summary>Полная неуязвимость (например, на время анимации).</summary>
         public bool IsInvulnerable { get; set; }
         public float ShieldAmount { get { return Time.time < shieldEndTime ? shieldAmount : 0f; } }
 
@@ -52,10 +45,6 @@ namespace HullBreach.Combat
             TargetRegistry.Unregister(this);
         }
 
-        /// <summary>
-        /// Программная настройка вместо инспектора (процедурная сборка объектов, см. Assets/HullBreachGame).
-        /// Вызывать до активации объекта.
-        /// </summary>
         public void Configure(Faction newFaction, float newMaxHealth, float newInvulnerabilityAfterHit)
         {
             faction = newFaction;
@@ -72,7 +61,6 @@ namespace HullBreach.Combat
             current = maxHealth;
         }
 
-        /// <summary>Применяет урон. Возвращает фактически нанесённый урон.</summary>
         public float TakeDamage(DamageInfo info)
         {
             EnsureInitialized();
@@ -112,7 +100,6 @@ namespace HullBreach.Combat
             HealthChanged?.Invoke(current, maxHealth);
         }
 
-        /// <summary>Мгновенное убийство (самоуничтожение камикадзе и т.п.).</summary>
         public void Kill(GameObject source)
         {
             EnsureInitialized();
@@ -132,7 +119,6 @@ namespace HullBreach.Combat
             HealthChanged?.Invoke(current, maxHealth);
         }
 
-        /// <summary>Воскрешение / полное восстановление. Сбрасывает щит и неуязвимость.</summary>
         public void ResetToFull()
         {
             EnsureInitialized();
@@ -145,7 +131,6 @@ namespace HullBreach.Combat
             HealthChanged?.Invoke(current, maxHealth);
         }
 
-        /// <summary>Поглощающий щит на ограниченное время (заменяет предыдущий).</summary>
         public void AddShield(float amount, float durationSeconds)
         {
             if (amount <= 0f || durationSeconds <= 0f) return;
@@ -153,7 +138,6 @@ namespace HullBreach.Combat
             shieldEndTime = Time.time + durationSeconds;
         }
 
-        /// <summary>Доля снижения урона 0..1.</summary>
         public void SetDamageReduction(float fraction)
         {
             damageReduction = Mathf.Clamp01(fraction);

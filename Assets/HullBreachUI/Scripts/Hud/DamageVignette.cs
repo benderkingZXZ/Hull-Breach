@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Hud
 {
-    /// <summary>Красная виньетка по краям экрана: вспышка при уроне и пульсация при низком здоровье.</summary>
     public sealed class DamageVignette : MonoBehaviour
     {
         private Image image;
@@ -22,7 +21,6 @@ namespace HullBreach.UI.Hud
             return v;
         }
 
-        /// <summary>strength 0…1.</summary>
         public void Flash(float strength)
         {
             flash = Mathf.Max(flash, Mathf.Clamp01(strength));

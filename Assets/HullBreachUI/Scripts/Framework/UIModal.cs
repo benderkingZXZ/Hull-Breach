@@ -5,10 +5,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Framework
 {
-    /// <summary>
-    /// Основа модальных окон (подтверждение, настройки, пауза). Это не основные экраны:
-    /// они лежат поверх экрана в слое Modals и закрываются при любой смене игрового состояния.
-    /// </summary>
     public abstract class UIModal : MonoBehaviour
     {
         protected UIManager Manager { get; private set; }
@@ -21,7 +17,7 @@ namespace HullBreach.UI.Framework
             Services = services;
 
             Image dim = UIFactory.Img(transform, "Dim", ProceduralSprites.White, UIColors.Dim);
-            dim.raycastTarget = true;   // блокирует касания экрана под окном
+            dim.raycastTarget = true;
 
             RectTransform content = UIFactory.Rect("Content", transform);
             UIFactory.Stretch(content);
@@ -33,7 +29,6 @@ namespace HullBreach.UI.Framework
         protected abstract void BuildContent(RectTransform content);
         protected virtual void OnOpened() { }
         protected virtual void OnClosed() { }
-        /// <summary>Кнопка «Назад»: по умолчанию закрывает окно.</summary>
         public virtual void HandleBack() { Close(); }
 
         public void Open()

@@ -3,7 +3,6 @@ using HullBreach.Core;
 
 namespace HullBreach.UI.Contracts
 {
-    /// <summary>Постоянный прогресс (ресурсы, улучшения). Реализация: Bridge/ProgressionAdapter.</summary>
     public interface IProgressionService
     {
         int Resources { get; }
@@ -14,7 +13,6 @@ namespace HullBreach.UI.Contracts
 
         int GetUpgradeLevel(UpgradeType type);
         int GetMaxUpgradeLevel();
-        /// <summary>Цена следующего уровня; -1, если достигнут максимум.</summary>
         int GetUpgradeCost(UpgradeType type);
         bool CanPurchaseUpgrade(UpgradeType type);
         bool TryPurchaseUpgrade(UpgradeType type);

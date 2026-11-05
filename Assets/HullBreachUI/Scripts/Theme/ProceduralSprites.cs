@@ -4,11 +4,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Theme
 {
-    /// <summary>
-    /// Временные визуальные ресурсы, нарисованные кодом: панели со скошенными углами, круги, иконки, звёзды.
-    /// Нужны, пока нет финального арта. Любой спрайт подменяется через UITheme (ключ → Sprite).
-    /// Все спрайты белые (alpha = форма) и красятся через Image.color.
-    /// </summary>
     public static class ProceduralSprites
     {
         private static readonly Dictionary<string, Sprite> cache = new Dictionary<string, Sprite>();
@@ -19,21 +14,15 @@ namespace HullBreach.UI.Theme
             cache.Clear();
         }
 
-        // ------------------------------------------------------------------ Публичные спрайты
-
-        /// <summary>9-slice панель со скошенными углами (граница 24 px).</summary>
         public static Sprite Panel { get { return Cached("panel", () => BuildChamfer(64, 14f, 0f, 24)); } }
         public static Sprite PanelEdge { get { return Cached("panel_edge", () => BuildChamfer(64, 14f, 2.6f, 24)); } }
-        /// <summary>Маленькая плашка для полос и пипсов (граница 12 px).</summary>
         public static Sprite Bar { get { return Cached("bar", () => BuildChamfer(32, 7f, 0f, 12)); } }
         public static Sprite BarEdge { get { return Cached("bar_edge", () => BuildChamfer(32, 7f, 1.8f, 12)); } }
         public static Sprite Circle { get { return Cached("circle", () => BuildCircle(128, 0f)); } }
         public static Sprite Ring { get { return Cached("ring", () => BuildCircle(128, 7f)); } }
         public static Sprite White { get { return Cached("white", BuildWhite); } }
         public static Sprite Vignette { get { return Cached("vignette", BuildVignette); } }
-        /// <summary>Вертикальный градиент: сверху непрозрачный, снизу прозрачный.</summary>
         public static Sprite GradientTop { get { return Cached("gradient_top", BuildGradient); } }
-        /// <summary>Тайлящийся рисунок металлических швов и заклёпок (для Image.Type.Tiled).</summary>
         public static Sprite Grid { get { return Cached("grid", BuildGrid); } }
 
         public static Sprite Icon(string name)
@@ -50,8 +39,6 @@ namespace HullBreach.UI.Theme
             cache[key] = s;
             return s;
         }
-
-        // ------------------------------------------------------------------ Текстуры
 
         private static Texture2D NewTexture(int w, int h, TextureWrapMode wrap)
         {
@@ -176,7 +163,6 @@ namespace HullBreach.UI.Theme
             return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
         }
 
-        /// <summary>Тайлящаяся текстура звёзд на прозрачном фоне (для RawImage с Repeat).</summary>
         public static Texture2D StarTexture(int size, int count, int seed, float maxAlpha)
         {
             Texture2D tex = NewTexture(size, size, TextureWrapMode.Repeat);
@@ -209,11 +195,9 @@ namespace HullBreach.UI.Theme
             return tex;
         }
 
-        // ------------------------------------------------------------------ Иконки (растеризация фигур)
-
         private struct Shape
         {
-            public int Kind;      // 0 — многоугольник, 1 — круг, 2 — кольцо, 3 — прямоугольник
+            public int Kind;
             public float[] P;
             public float A, B, C, D;
             public bool Cut;

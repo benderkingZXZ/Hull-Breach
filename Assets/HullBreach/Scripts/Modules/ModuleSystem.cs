@@ -9,11 +9,6 @@ using HullBreach.Player;
 
 namespace HullBreach.Modules
 {
-    /// <summary>
-    /// Модули текущего забега: генерация 3 предложений, выбор 1, пассивные бонусы и активные способности.
-    /// Редкость (Common/Rare/Epic) определяет силу эффекта (таблица в ModuleCatalog).
-    /// Модули сбрасываются в начале нового забега (ResetForNewRun).
-    /// </summary>
     public class ModuleSystem : MonoBehaviour
     {
         public const int OffersPerReward = 3;
@@ -38,10 +33,8 @@ namespace HullBreach.Modules
         public event Action OwnedModulesChanged;
 
         public IReadOnlyList<ModuleInstance> OwnedModules { get { return owned; } }
-        /// <summary>3 текущих предложения или null, если выбор не активен.</summary>
         public IReadOnlyList<ModuleInstance> CurrentOffers { get { return hasOffers ? offers : null; } }
 
-        /// <summary>Программная настройка вместо инспектора (безопасна и после активации компонента).</summary>
         public void Configure(PlayerController newPlayer, PlayerCombat newPlayerCombat)
         {
             if (isActiveAndEnabled && playerCombat != null) playerCombat.SkillButtonPressed -= HandleSkillButton;
@@ -74,9 +67,6 @@ namespace HullBreach.Modules
             readyTimes.Clear();
         }
 
-        // ---------- Предложения ----------
-
-        /// <summary>Генерирует 3 разных модуля (ещё не собранных) со случайной редкостью.</summary>
         public IReadOnlyList<ModuleInstance> GenerateOffers(EntryPointProfile entry)
         {
             float rareBonus = entry != null ? entry.RareModuleBonus : 0f;
@@ -85,7 +75,6 @@ namespace HullBreach.Modules
             IReadOnlyList<ModuleDefinition> all = ModuleCatalog.All;
             for (int i = 0; i < all.Count; i++)
                 if (FindOwned(all[i].Id) == null) pool.Add(all[i]);
-            // Страховка: если свободных модулей < 3 (в рамках концепции не бывает), добираем из остальных
             for (int i = 0; i < all.Count && pool.Count < OffersPerReward; i++)
                 if (!pool.Contains(all[i])) pool.Add(all[i]);
 
@@ -118,7 +107,6 @@ namespace HullBreach.Modules
             return ModuleRarity.Epic;
         }
 
-        /// <summary>Выбор одного из предложений (0..2). Прочие предложения сгорают.</summary>
         public bool ChooseOffer(int index)
         {
             if (!hasOffers || index < 0 || index >= offers.Count) return false;
@@ -140,8 +128,6 @@ namespace HullBreach.Modules
             return null;
         }
 
-        // ---------- Пассивные ----------
-
         public StatModifiers GetPassiveModifiers()
         {
             StatModifiers m = new StatModifiers();
@@ -159,14 +145,11 @@ namespace HullBreach.Modules
             return m;
         }
 
-        /// <summary>Вызывается при убийстве врага (Нанорегенерация).</summary>
         public void NotifyEnemyKilled()
         {
             ModuleInstance nano = FindOwned(ModuleId.NanoRepair);
             if (nano != null && player != null && player.IsAlive) player.Health.Heal(nano.Value);
         }
-
-        // ---------- Активные ----------
 
         public float GetCooldownRemaining(ModuleId id)
         {

@@ -2,10 +2,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Framework
 {
-    /// <summary>
-    /// Подгоняет RectTransform под Screen.safeArea (вырезы, скруглённые углы, жестовая панель Android).
-    /// Следит за изменением размера экрана и поворотом.
-    /// </summary>
     public sealed class SafeAreaFitter : MonoBehaviour
     {
         [Tooltip("Дополнительный внутренний отступ в единицах холста.")]

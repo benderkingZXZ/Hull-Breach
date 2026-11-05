@@ -10,10 +10,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>
-    /// Выбор точки входа: три карточки с явным разделением «РИСК» и «НАГРАДА».
-    /// Полосы нормированы по самому большому значению среди трёх входов — видно, чем вход отличается от соседей.
-    /// </summary>
     public sealed class EntrySelectionUI : UIScreen
     {
         private const int MaxRoomsForPips = 5;
@@ -153,7 +149,7 @@ namespace HullBreach.UI.Screens
         private void OnConfirm()
         {
             if (profiles == null || selectedIndex < 0 || selectedIndex >= profiles.Count) return;
-            confirm.SetInteractable(false);   // защита от двойного нажатия: дальше состояние сменится само
+            confirm.SetInteractable(false);
             if (!Services.Flow.ConfirmEntryPoint(profiles[selectedIndex].Entry))
             {
                 Manager.Toast("Не удалось начать абордаж", true);

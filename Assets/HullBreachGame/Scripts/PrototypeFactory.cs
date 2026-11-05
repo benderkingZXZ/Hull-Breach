@@ -1,26 +1,18 @@
-using System.Collections.Generic;
 using HullBreach.Combat;
 using HullBreach.Core;
+using HullBreach.Data;
 using HullBreach.Enemies;
 using HullBreach.Player;
 using UnityEngine;
 
 namespace HullBreach.Game
 {
-    /// <summary>
-    /// Строит игровые объекты из кода: игрок, 5 типов врагов, снаряды. Это временная графика прототипа:
-    /// когда появятся настоящие префабы, назначайте их вместо этих (см. docs/GAME_INTEGRATION.md).
-    /// Шаблоны (враги, снаряды) лежат под НЕАКТИВНЫМ родителем: их компоненты не запускаются, а клоны оживают на сцене.
-    /// </summary>
     public static class PrototypeFactory
     {
-        /// <summary>Слои без имён (достаточно индексов): игрок и враги не сталкиваются физически.</summary>
         public const int PlayerLayer = 8;
         public const int EnemyLayer = 9;
 
-        // ---------------------------------------------------------------- Снаряды
-
-        public static Projectile CreateProjectile(Transform templatesRoot, string name, Color color, float size)
+        public static Projectile CreateProjectile(Transform templatesRoot, string name, string artPath, float maxSize)
         {
             GameObject go = new GameObject(name);
             go.transform.SetParent(templatesRoot, false);
@@ -30,23 +22,18 @@ namespace HullBreach.Game
             rb.gravityScale = 0f;
 
             CircleCollider2D col = go.AddComponent<CircleCollider2D>();
-            col.radius = size * 0.5f;
+            col.radius = maxSize * 0.35f;
             col.isTrigger = true;
 
             GameObject visual = new GameObject("Visual");
             visual.transform.SetParent(go.transform, false);
-            visual.transform.localScale = new Vector3(size, size, 1f);
             SpriteRenderer sr = visual.AddComponent<SpriteRenderer>();
-            sr.sprite = RuntimeSprites.Circle;
-            sr.color = color;
+            sr.sprite = ArtCatalog.GetSingle(artPath, maxSize);
             sr.sortingOrder = 14;
 
             return go.AddComponent<Projectile>();
         }
 
-        // ---------------------------------------------------------------- Игрок
-
-        /// <summary>Создаёт НЕАКТИВНЫЙ объект игрока. Вызывающий активирует его после настройки систем.</summary>
         public static PlayerController CreatePlayer(Projectile playerShot)
         {
             GameObject go = new GameObject("Player");
@@ -60,121 +47,83 @@ namespace HullBreach.Game
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
             CircleCollider2D col = go.AddComponent<CircleCollider2D>();
-            col.radius = 0.4f;
+            col.radius = ArtSpecs.PlayerHeight * 0.3f;
 
             Health health = go.AddComponent<Health>();
             health.Configure(Faction.Player, 100f, 0.3f);
 
-            // Визуал (дочерний объект, чтобы не масштабировать корень с физикой)
+            SideSprites samurai = ArtCatalog.GetCharacter(ArtSpecs.SamuraiFolder, ArtSpecs.PlayerHeight);
+            SideSprites strel = ArtCatalog.GetCharacter(ArtSpecs.StrelFolder, ArtSpecs.PlayerHeight);
+
             GameObject visual = new GameObject("Visual");
             visual.transform.SetParent(go.transform, false);
-            visual.transform.localScale = new Vector3(0.95f, 0.95f, 1f);
             SpriteRenderer body = visual.AddComponent<SpriteRenderer>();
-            body.sprite = RuntimeSprites.Circle;
+            body.sprite = samurai.Get(ArtSide.Front);
             body.sortingOrder = 8;
-
-            GameObject ringGo = new GameObject("Ring");
-            ringGo.transform.SetParent(visual.transform, false);
-            SpriteRenderer ring = ringGo.AddComponent<SpriteRenderer>();
-            ring.sprite = RuntimeSprites.Ring;
-            ring.color = new Color(1f, 1f, 1f, 0.9f);
-            ring.sortingOrder = 9;
-
-            GameObject nubGo = new GameObject("Nub");
-            nubGo.transform.SetParent(go.transform, false);
-            nubGo.transform.localScale = new Vector3(0.28f, 0.28f, 1f);
-            SpriteRenderer nub = nubGo.AddComponent<SpriteRenderer>();
-            nub.sprite = RuntimeSprites.Circle;
-            nub.color = Color.white;
-            nub.sortingOrder = 10;
 
             PlayerController controller = go.AddComponent<PlayerController>();
             PlayerCombat combat = go.AddComponent<PlayerCombat>();
             combat.Configure(playerShot, null);
-            PlayerVisual.Attach(go, body, nubGo.transform);
+            PlayerVisual.Attach(go, body, samurai, strel);
             return controller;
         }
 
-        // ---------------------------------------------------------------- Враги
-
-        public static EnemyPrefabEntry[] CreateEnemyEntries(Transform templatesRoot, Projectile enemyShot, bool healthBars)
+        public static EnemyPrefabEntry[] CreateEnemyEntries(Transform templatesRoot, Projectile gunnerShot,
+            Projectile miniBossShot, Projectile nexusShot, bool healthBars)
         {
-            EnemyType[] types =
+            return new[]
             {
-                EnemyType.Drone, EnemyType.Gunner, EnemyType.Heavy, EnemyType.Exploder, EnemyType.MiniBoss
+                Entry(EnemyType.Drone, false,
+                    CreateEnemy(templatesRoot, "Enemy_Drone", EnemyType.Drone, ArtSpecs.DroneFolder, ArtSpecs.DroneHeight, null, healthBars)),
+                Entry(EnemyType.Gunner, false,
+                    CreateEnemy(templatesRoot, "Enemy_Gunner", EnemyType.Gunner, ArtSpecs.GunnerFolder, ArtSpecs.GunnerHeight, gunnerShot, healthBars)),
+                Entry(EnemyType.Heavy, false,
+                    CreateEnemy(templatesRoot, "Enemy_Heavy", EnemyType.Heavy, ArtSpecs.HeavyFolder, ArtSpecs.HeavyHeight, null, healthBars)),
+                Entry(EnemyType.Exploder, false,
+                    CreateEnemy(templatesRoot, "Enemy_Exploder", EnemyType.Exploder, ArtSpecs.ExploderFolder, ArtSpecs.ExploderHeight, null, healthBars)),
+                Entry(EnemyType.MiniBoss, false,
+                    CreateEnemy(templatesRoot, "Enemy_MiniBoss", EnemyType.MiniBoss, ArtSpecs.MiniBossFolder, ArtSpecs.MiniBossHeight, miniBossShot, healthBars)),
+                Entry(EnemyType.MiniBoss, true,
+                    CreateEnemy(templatesRoot, "Enemy_FinalBoss", EnemyType.MiniBoss, ArtSpecs.NexusFolder, ArtSpecs.NexusHeight, nexusShot, healthBars)),
             };
-            List<EnemyPrefabEntry> entries = new List<EnemyPrefabEntry>();
-            for (int i = 0; i < types.Length; i++)
-            {
-                EnemyPrefabEntry entry = new EnemyPrefabEntry();
-                entry.type = types[i];
-                entry.prefab = CreateEnemy(templatesRoot, types[i], enemyShot, healthBars);
-                entries.Add(entry);
-            }
-            return entries.ToArray();
         }
 
-        private static EnemyController CreateEnemy(Transform templatesRoot, EnemyType type, Projectile enemyShot, bool healthBar)
+        private static EnemyPrefabEntry Entry(EnemyType type, bool finalShipBoss, EnemyController prefab)
         {
-            float diameter;
-            float mass;
-            Color color;
-            bool square = false;
-            float rotation = 0f;
-            switch (type)
-            {
-                case EnemyType.Drone:
-                    diameter = 0.75f; mass = 1f; color = new Color(1f, 0.45f, 0.2f, 1f); square = true; rotation = 45f; break;
-                case EnemyType.Gunner:
-                    diameter = 0.9f; mass = 1.5f; color = new Color(0.78f, 0.36f, 1f, 1f); break;
-                case EnemyType.Heavy:
-                    diameter = 1.5f; mass = 6f; color = new Color(0.78f, 0.15f, 0.2f, 1f); square = true; break;
-                case EnemyType.Exploder:
-                    diameter = 0.8f; mass = 1f; color = new Color(1f, 0.9f, 0.2f, 1f); break;
-                default: // MiniBoss
-                    diameter = 2.6f; mass = 20f; color = new Color(1f, 0.2f, 0.7f, 1f); break;
-            }
+            return new EnemyPrefabEntry { type = type, finalShipBoss = finalShipBoss, prefab = prefab };
+        }
 
-            GameObject go = new GameObject("Enemy_" + type);
+        private static EnemyController CreateEnemy(Transform templatesRoot, string name, EnemyType type, string artFolder,
+            float height, Projectile shot, bool healthBar)
+        {
+            GameObject go = new GameObject(name);
             go.transform.SetParent(templatesRoot, false);
             go.layer = EnemyLayer;
 
             Rigidbody2D rb = go.AddComponent<Rigidbody2D>();
             rb.gravityScale = 0f;
             rb.freezeRotation = true;
-            rb.mass = mass;
+            rb.mass = Mathf.Max(0.5f, height * height);
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
 
             CircleCollider2D col = go.AddComponent<CircleCollider2D>();
-            col.radius = diameter * 0.5f * (square ? 0.9f : 1f);
+            col.radius = height * 0.3f;
 
             Health health = go.AddComponent<Health>();
-            health.Configure(Faction.Enemy, HullBreach.Data.EnemyDefaults.Get(type).MaxHealth, 0f);
+            health.Configure(Faction.Enemy, EnemyDefaults.Get(type).MaxHealth, 0f);
 
+            SideSprites set = ArtCatalog.GetCharacter(artFolder, height);
             GameObject visual = new GameObject("Visual");
             visual.transform.SetParent(go.transform, false);
-            visual.transform.localScale = new Vector3(diameter, diameter, 1f);
-            visual.transform.localRotation = Quaternion.Euler(0f, 0f, rotation);
             SpriteRenderer sr = visual.AddComponent<SpriteRenderer>();
-            sr.sprite = square ? RuntimeSprites.Square : RuntimeSprites.Circle;
-            sr.color = color;
+            sr.sprite = set.Get(ArtSide.Front);
             sr.sortingOrder = 6;
 
-            if (type == EnemyType.MiniBoss || type == EnemyType.Gunner)
-            {
-                GameObject ringGo = new GameObject("Ring");
-                ringGo.transform.SetParent(go.transform, false);
-                ringGo.transform.localScale = new Vector3(diameter * 1.15f, diameter * 1.15f, 1f);
-                SpriteRenderer ring = ringGo.AddComponent<SpriteRenderer>();
-                ring.sprite = RuntimeSprites.Ring;
-                ring.color = new Color(color.r, color.g, color.b, 0.8f);
-                ring.sortingOrder = 7;
-            }
-
             EnemyController controller = go.AddComponent<EnemyController>();
-            controller.Configure(type, enemyShot);
+            controller.Configure(type, shot);
+            EnemyVisual.Attach(go, sr, set, height);
 
-            if (healthBar) WorldHealthBar.Attach(go, Mathf.Max(0.9f, diameter), diameter * 0.5f + 0.35f);
+            if (healthBar) WorldHealthBar.Attach(go, Mathf.Max(0.9f, height * 0.9f), height * 0.5f + 0.25f);
             return controller;
         }
     }

@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace HullBreach.Game
 {
-    /// <summary>Короткий визуальный эффект: спрайт плавно меняет размер и исчезает, затем объект удаляется.</summary>
     public sealed class OneShotFx : MonoBehaviour
     {
         private SpriteRenderer sr;

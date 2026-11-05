@@ -10,11 +10,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Bridge
 {
-    /// <summary>
-    /// ICombatFeed + ICombatInputSink поверх Health / PlayerController / PlayerCombat / ShipRunManager.
-    /// Подписывается на события бэкенда в конструкторе и отписывается в Dispose.
-    /// Игрок может быть неактивен вне боя — это не мешает подпискам и опросу.
-    /// </summary>
     public sealed class CombatAdapter : ICombatFeed, ICombatInputSink, IDisposable
     {
         private readonly ShipRunManager run;
@@ -68,8 +63,6 @@ namespace HullBreach.UI.Bridge
             }
         }
 
-        // ------------------------------------------------------------------ ICombatFeed: состояние
-
         public float CurrentHealth { get { return health.CurrentHealth; } }
         public float MaxHealth { get { return health.MaxHealth; } }
         public float Shield { get { return health.ShieldAmount; } }
@@ -105,8 +98,6 @@ namespace HullBreach.UI.Bridge
             worldPosition = Vector3.zero;
             return false;
         }
-
-        // ------------------------------------------------------------------ ICombatFeed: события
 
         public event Action<float, float> HealthChanged;
         public event Action<DamageEvent> PlayerDamaged;
@@ -177,8 +168,6 @@ namespace HullBreach.UI.Bridge
             Action h = ShipFailed;
             if (h != null) h();
         }
-
-        // ------------------------------------------------------------------ ICombatInputSink
 
         public void SetMoveInput(Vector2 direction) { if (player != null) player.SetMoveInput(direction); }
         public void SetAttackHeld(bool held) { if (combat != null) combat.SetAttackHeld(held); }

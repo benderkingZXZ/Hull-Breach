@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>Экран смерти: забег завершён, ресурсы и прокачка сохранены; начать заново, в прокачку или в меню.</summary>
     public sealed class DeathScreenUI : RunEndScreenBase
     {
         public override ScreenId Id { get { return ScreenId.Death; } }

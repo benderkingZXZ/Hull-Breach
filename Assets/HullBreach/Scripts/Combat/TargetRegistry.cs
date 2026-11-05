@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace HullBreach.Combat
 {
-    /// <summary>
-    /// Реестр живых врагов (Health с Faction.Enemy). Используется автонаведением и взрывами по площади.
-    /// Статическое состояние сбрасывается при запуске (безопасно при выключенном Domain Reload).
-    /// </summary>
     public static class TargetRegistry
     {
         private static readonly List<Health> enemies = new List<Health>(64);
@@ -29,7 +25,6 @@ namespace HullBreach.Combat
             enemies.Remove(h);
         }
 
-        /// <summary>Ближайший живой враг в радиусе или null.</summary>
         public static Health FindNearestEnemy(Vector2 origin, float maxRange)
         {
             Health best = null;
@@ -48,7 +43,6 @@ namespace HullBreach.Combat
             return best;
         }
 
-        /// <summary>Записывает в results всех живых врагов в радиусе (список предварительно НЕ очищается).</summary>
         public static int CollectEnemiesInRadius(Vector2 origin, float radius, List<Health> results)
         {
             int added = 0;

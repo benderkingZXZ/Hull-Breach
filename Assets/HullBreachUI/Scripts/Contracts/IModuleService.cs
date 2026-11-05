@@ -5,7 +5,6 @@ using HullBreach.Data;
 
 namespace HullBreach.UI.Contracts
 {
-    /// <summary>Модули текущего забега (только чтение). Выбор модуля — через IGameFlowService.ChooseModule.</summary>
     public interface IModuleService
     {
         IReadOnlyList<ModuleInstance> OwnedModules { get; }

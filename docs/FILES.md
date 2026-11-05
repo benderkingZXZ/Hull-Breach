@@ -1,45 +1,176 @@
 # Список файлов проекта
 
-Всего файлов: 121
+Всего файлов: 170
 
-| Файл | Назначение |
-|---|---|
-| `.github/workflows/build-android.yml` | автосборка APK и публикация релиза |
-| `.gitignore` |  |
-| `Assets/HullBreach/HullBreach.Gameplay.asmdef` |  |
-| `Assets/HullBreach/Tests~/Editor/HullBreach.Tests.EditMode.asmdef` |  |
-| `Assets/HullBreach/Tests~/Editor/HullBreachLogicTests.cs` |  |
-| `Assets/HullBreachGame/Editor/CiBuild.cs` | CI шаг 2: сцена, настройки Android, сборка APK |
-| `Assets/HullBreachGame/Editor/CiPrepare.cs` | CI шаг 1: импорт TMP Essentials |
-| `Assets/HullBreachGame/Editor/HullBreach.Game.Editor.asmdef` |  |
-| `Assets/HullBreachGame/FONTS_LICENSE.txt` |  |
-| `Assets/HullBreachGame/HullBreach.Game.asmdef` |  |
-| `Assets/HullBreachGame/Resources/Fonts/HB_Body.ttf` |  |
-| `Assets/HullBreachGame/Resources/Fonts/HB_Title.ttf` |  |
-| `Assets/HullBreachGame/Scripts/CameraFollow2D.cs` | камера с границами комнаты |
-| `Assets/HullBreachGame/Scripts/FontFactory.cs` | кириллический TMP-шрифт и UITheme |
-| `Assets/HullBreachGame/Scripts/GameBootstrap.cs` | точка входа: собирает мир, бэкенд и UI |
-| `Assets/HullBreachGame/Scripts/OneShotFx.cs` |  |
-| `Assets/HullBreachGame/Scripts/PlayerVisual.cs` |  |
-| `Assets/HullBreachGame/Scripts/PrototypeFactory.cs` | игрок, враги, снаряды из кода |
-| `Assets/HullBreachGame/Scripts/ReactorVisual.cs` |  |
-| `Assets/HullBreachGame/Scripts/RoomTemplateFactory.cs` | 12 шаблонов комнат из кода |
-| `Assets/HullBreachGame/Scripts/RuntimeSprites.cs` | спрайты, рисуемые кодом |
-| `Assets/HullBreachGame/Scripts/WorldHealthBar.cs` |  |
-| `Assets/HullBreachUI/Editor/HullBreach.UI.Editor.asmdef` |  |
-| `Assets/HullBreachUI/Editor/HullBreachUIMenu.cs` |  |
-| `Assets/HullBreachUI/HullBreach.UI.asmdef` |  |
-| `Packages/manifest.json` | пакеты Unity (TextMeshPro, uGUI, модули) |
-| `ProjectSettings/ProjectVersion.txt` | версия Unity для CI (2022.3.62f2) |
-| `README.md` |  |
-| `docs/BACKEND_API.md` |  |
-| `docs/BACKEND_INTEGRATION.md` |  |
-| `docs/BACKEND_KNOWN_ISSUES.md` |  |
-| `docs/BACKEND_README.md` |  |
-| `docs/FRONTEND_API.md` |  |
-| `docs/FRONTEND_KNOWN_ISSUES.md` |  |
-| `docs/FRONTEND_README.md` |  |
-| `docs/GAME_INTEGRATION.md` |  |
-| `docs/KNOWN_ISSUES.md` |  |
-
-Исходники бэкенда (`Assets/HullBreach/Scripts/**`, 27 файлов) и фронтенда (`Assets/HullBreachUI/Scripts/**`, 57 файлов) не перечислены поштучно — см. docs/BACKEND_API.md (раздел 2), docs/FRONTEND_README.md.
+```
+.github/workflows/build-android.yml
+.gitignore
+Assets/HullBreach/HullBreach.Gameplay.asmdef
+Assets/HullBreach/Scripts/Combat/DamageInfo.cs
+Assets/HullBreach/Scripts/Combat/Health.cs
+Assets/HullBreach/Scripts/Combat/Projectile.cs
+Assets/HullBreach/Scripts/Combat/TargetRegistry.cs
+Assets/HullBreach/Scripts/Core/GameEnums.cs
+Assets/HullBreach/Scripts/Core/GameStateManager.cs
+Assets/HullBreach/Scripts/Data/EnemyDefaults.cs
+Assets/HullBreach/Scripts/Data/EntryPointCatalog.cs
+Assets/HullBreach/Scripts/Data/ModuleCatalog.cs
+Assets/HullBreach/Scripts/Data/PlayerStats.cs
+Assets/HullBreach/Scripts/Data/RobotDefinitions.cs
+Assets/HullBreach/Scripts/Data/RunModels.cs
+Assets/HullBreach/Scripts/Data/ShipDefinition.cs
+Assets/HullBreach/Scripts/Enemies/EnemyController.cs
+Assets/HullBreach/Scripts/Enemies/EnemySpawner.cs
+Assets/HullBreach/Scripts/Meta/ProgressionSystem.cs
+Assets/HullBreach/Scripts/Modules/ModuleSystem.cs
+Assets/HullBreach/Scripts/Persistence/SaveData.cs
+Assets/HullBreach/Scripts/Persistence/SaveSystem.cs
+Assets/HullBreach/Scripts/Player/PlayerCombat.cs
+Assets/HullBreach/Scripts/Player/PlayerController.cs
+Assets/HullBreach/Scripts/Rooms/RoomController.cs
+Assets/HullBreach/Scripts/Rooms/RoomExitTrigger.cs
+Assets/HullBreach/Scripts/Rooms/RoomGenerator.cs
+Assets/HullBreach/Scripts/Rooms/RoomLayout.cs
+Assets/HullBreach/Scripts/RunFlow/SectorMapSystem.cs
+Assets/HullBreach/Scripts/RunFlow/ShipRunManager.cs
+Assets/HullBreach/Tests~/Editor/HullBreach.Tests.EditMode.asmdef
+Assets/HullBreach/Tests~/Editor/HullBreachLogicTests.cs
+Assets/HullBreachGame/Editor/CiBuild.cs
+Assets/HullBreachGame/Editor/CiPrepare.cs
+Assets/HullBreachGame/Editor/HullBreach.Game.Editor.asmdef
+Assets/HullBreachGame/FONTS_LICENSE.txt
+Assets/HullBreachGame/HullBreach.Game.asmdef
+Assets/HullBreachGame/Resources/Art/Characters/samurai/back.png
+Assets/HullBreachGame/Resources/Art/Characters/samurai/front.png
+Assets/HullBreachGame/Resources/Art/Characters/samurai/left.png
+Assets/HullBreachGame/Resources/Art/Characters/samurai/right.png
+Assets/HullBreachGame/Resources/Art/Characters/strel/back.png
+Assets/HullBreachGame/Resources/Art/Characters/strel/front.png
+Assets/HullBreachGame/Resources/Art/Characters/strel/left.png
+Assets/HullBreachGame/Resources/Art/Characters/strel/right.png
+Assets/HullBreachGame/Resources/Art/Enemies/drone/back.png
+Assets/HullBreachGame/Resources/Art/Enemies/drone/front.png
+Assets/HullBreachGame/Resources/Art/Enemies/drone/left.png
+Assets/HullBreachGame/Resources/Art/Enemies/drone/right.png
+Assets/HullBreachGame/Resources/Art/Enemies/exploder/back.png
+Assets/HullBreachGame/Resources/Art/Enemies/exploder/front.png
+Assets/HullBreachGame/Resources/Art/Enemies/exploder/left.png
+Assets/HullBreachGame/Resources/Art/Enemies/exploder/right.png
+Assets/HullBreachGame/Resources/Art/Enemies/gunner/back.png
+Assets/HullBreachGame/Resources/Art/Enemies/gunner/front.png
+Assets/HullBreachGame/Resources/Art/Enemies/gunner/left.png
+Assets/HullBreachGame/Resources/Art/Enemies/gunner/right.png
+Assets/HullBreachGame/Resources/Art/Enemies/heavy/back.png
+Assets/HullBreachGame/Resources/Art/Enemies/heavy/front.png
+Assets/HullBreachGame/Resources/Art/Enemies/heavy/left.png
+Assets/HullBreachGame/Resources/Art/Enemies/heavy/right.png
+Assets/HullBreachGame/Resources/Art/Enemies/miniboss/back.png
+Assets/HullBreachGame/Resources/Art/Enemies/miniboss/front.png
+Assets/HullBreachGame/Resources/Art/Enemies/miniboss/left.png
+Assets/HullBreachGame/Resources/Art/Enemies/miniboss/right.png
+Assets/HullBreachGame/Resources/Art/Enemies/nexus/back.png
+Assets/HullBreachGame/Resources/Art/Enemies/nexus/front.png
+Assets/HullBreachGame/Resources/Art/Enemies/nexus/left.png
+Assets/HullBreachGame/Resources/Art/Enemies/nexus/right.png
+Assets/HullBreachGame/Resources/Art/Projectiles/gunner_pulse.png
+Assets/HullBreachGame/Resources/Art/Projectiles/miniboss_pulse.png
+Assets/HullBreachGame/Resources/Art/Projectiles/nexus_pulse.png
+Assets/HullBreachGame/Resources/Art/Projectiles/strel_shot.png
+Assets/HullBreachGame/Resources/Audio/Music/combat.mp3
+Assets/HullBreachGame/Resources/Audio/Music/menu.mp3
+Assets/HullBreachGame/Resources/Audio/Sfx/boss_victory.wav
+Assets/HullBreachGame/Resources/Audio/Sfx/player_hurt.wav
+Assets/HullBreachGame/Resources/Audio/Sfx/room_cleared.wav
+Assets/HullBreachGame/Resources/Audio/Sfx/samurai_attack.wav
+Assets/HullBreachGame/Resources/Audio/Sfx/strel_shot.wav
+Assets/HullBreachGame/Resources/Audio/Sfx/ui_click.wav
+Assets/HullBreachGame/Resources/Fonts/HB_Body.ttf
+Assets/HullBreachGame/Resources/Fonts/HB_Title.ttf
+Assets/HullBreachGame/Scripts/ArtCatalog.cs
+Assets/HullBreachGame/Scripts/AudioManager.cs
+Assets/HullBreachGame/Scripts/CameraFollow2D.cs
+Assets/HullBreachGame/Scripts/EnemyVisual.cs
+Assets/HullBreachGame/Scripts/FontFactory.cs
+Assets/HullBreachGame/Scripts/GameBootstrap.cs
+Assets/HullBreachGame/Scripts/OneShotFx.cs
+Assets/HullBreachGame/Scripts/PlayerVisual.cs
+Assets/HullBreachGame/Scripts/PrototypeFactory.cs
+Assets/HullBreachGame/Scripts/ReactorVisual.cs
+Assets/HullBreachGame/Scripts/RoomTemplateFactory.cs
+Assets/HullBreachGame/Scripts/RuntimeSprites.cs
+Assets/HullBreachGame/Scripts/WorldHealthBar.cs
+Assets/HullBreachUI/Editor/HullBreach.UI.Editor.asmdef
+Assets/HullBreachUI/Editor/HullBreachUIMenu.cs
+Assets/HullBreachUI/HullBreach.UI.asmdef
+Assets/HullBreachUI/Scripts/Bridge/BackendBinder.cs
+Assets/HullBreachUI/Scripts/Bridge/CombatAdapter.cs
+Assets/HullBreachUI/Scripts/Bridge/GameFlowAdapter.cs
+Assets/HullBreachUI/Scripts/Bridge/ModuleAdapter.cs
+Assets/HullBreachUI/Scripts/Bridge/ProgressionAdapter.cs
+Assets/HullBreachUI/Scripts/Contracts/ICombatFeed.cs
+Assets/HullBreachUI/Scripts/Contracts/ICombatInputSink.cs
+Assets/HullBreachUI/Scripts/Contracts/IGameFlowService.cs
+Assets/HullBreachUI/Scripts/Contracts/IModuleService.cs
+Assets/HullBreachUI/Scripts/Contracts/IProgressionService.cs
+Assets/HullBreachUI/Scripts/Contracts/UIServices.cs
+Assets/HullBreachUI/Scripts/Controls/CombatButtonsUI.cs
+Assets/HullBreachUI/Scripts/Controls/TouchButton.cs
+Assets/HullBreachUI/Scripts/Controls/VirtualJoystick.cs
+Assets/HullBreachUI/Scripts/Framework/BannerView.cs
+Assets/HullBreachUI/Scripts/Framework/EventSystemGuard.cs
+Assets/HullBreachUI/Scripts/Framework/HullBreachUIBootstrap.cs
+Assets/HullBreachUI/Scripts/Framework/SafeAreaFitter.cs
+Assets/HullBreachUI/Scripts/Framework/ScreenId.cs
+Assets/HullBreachUI/Scripts/Framework/UIManager.cs
+Assets/HullBreachUI/Scripts/Framework/UIModal.cs
+Assets/HullBreachUI/Scripts/Framework/UIRootBuilder.cs
+Assets/HullBreachUI/Scripts/Framework/UIRootRefs.cs
+Assets/HullBreachUI/Scripts/Framework/UIScreen.cs
+Assets/HullBreachUI/Scripts/Framework/UISettings.cs
+Assets/HullBreachUI/Scripts/Framework/UIStrings.cs
+Assets/HullBreachUI/Scripts/Hud/DamageVignette.cs
+Assets/HullBreachUI/Scripts/Hud/FloatingTextLayer.cs
+Assets/HullBreachUI/Scripts/Hud/GameHUD.cs
+Assets/HullBreachUI/Scripts/Hud/HealthBarView.cs
+Assets/HullBreachUI/Scripts/Hud/TargetMarker.cs
+Assets/HullBreachUI/Scripts/Mock/MockDebugPanel.cs
+Assets/HullBreachUI/Scripts/Mock/MockGameHost.cs
+Assets/HullBreachUI/Scripts/Screens/CardParts.cs
+Assets/HullBreachUI/Scripts/Screens/ConfirmDialogUI.cs
+Assets/HullBreachUI/Scripts/Screens/DeathScreenUI.cs
+Assets/HullBreachUI/Scripts/Screens/EntrySelectionUI.cs
+Assets/HullBreachUI/Scripts/Screens/MainMenuUI.cs
+Assets/HullBreachUI/Scripts/Screens/ModuleSelectionUI.cs
+Assets/HullBreachUI/Scripts/Screens/ModuleStripView.cs
+Assets/HullBreachUI/Scripts/Screens/PauseMenuUI.cs
+Assets/HullBreachUI/Scripts/Screens/RunEndScreenBase.cs
+Assets/HullBreachUI/Scripts/Screens/SectorMapUI.cs
+Assets/HullBreachUI/Scripts/Screens/SettingsPanelUI.cs
+Assets/HullBreachUI/Scripts/Screens/UpgradeScreenUI.cs
+Assets/HullBreachUI/Scripts/Screens/VictoryScreenUI.cs
+Assets/HullBreachUI/Scripts/Theme/AppearAnimation.cs
+Assets/HullBreachUI/Scripts/Theme/CardVisual.cs
+Assets/HullBreachUI/Scripts/Theme/NumberTicker.cs
+Assets/HullBreachUI/Scripts/Theme/PressScale.cs
+Assets/HullBreachUI/Scripts/Theme/ProceduralSprites.cs
+Assets/HullBreachUI/Scripts/Theme/StarfieldBackdrop.cs
+Assets/HullBreachUI/Scripts/Theme/UIAssets.cs
+Assets/HullBreachUI/Scripts/Theme/UIColors.cs
+Assets/HullBreachUI/Scripts/Theme/UIFactory.cs
+Assets/HullBreachUI/Scripts/Theme/UIIcons.cs
+Assets/HullBreachUI/Scripts/Theme/UITheme.cs
+Packages/manifest.json
+ProjectSettings/ProjectVersion.txt
+README.md
+docs/ART_AND_AUDIO.md
+docs/BACKEND_API.md
+docs/BACKEND_INTEGRATION.md
+docs/BACKEND_KNOWN_ISSUES.md
+docs/BACKEND_README.md
+docs/FILES.md
+docs/FRONTEND_API.md
+docs/FRONTEND_KNOWN_ISSUES.md
+docs/FRONTEND_README.md
+docs/GAME_INTEGRATION.md
+docs/KNOWN_ISSUES.md
+```

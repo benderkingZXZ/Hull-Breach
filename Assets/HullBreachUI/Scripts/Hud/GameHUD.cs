@@ -11,12 +11,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Hud
 {
-    /// <summary>
-    /// Игровой HUD: здоровье, ресурсы, корабль и комната, модули, стик, кнопки атаки и навыка,
-    /// числа урона, виньетка, маркер цели и баннеры событий.
-    /// Подписки на события боя живут всё время жизни HUD (а не только пока он виден): переход в бой
-    /// происходит раньше, чем HUD закончит появляться, и события ShipStarted/RoomEntered нельзя терять.
-    /// </summary>
     public sealed class GameHUD : UIScreen
     {
         public override ScreenId Id { get { return ScreenId.Hud; } }
@@ -52,14 +46,11 @@ namespace HullBreach.UI.Hud
         private Color pendingBannerColor;
         private float pendingBannerSeconds;
 
-        // ------------------------------------------------------------------ Построение
-
         protected override void Build()
         {
             feed = Services.Combat;
             RectTransform root = (RectTransform)transform;
 
-            // Верхний левый угол: здоровье, ресурсы, модули
             health = HealthBarView.Create(root, 460f, 64f);
             UIFactory.Anchor(health.Rect, 0f, 1f, 0f, 1f, 0f, 0f, 460f, 64f);
 
@@ -69,7 +60,6 @@ namespace HullBreach.UI.Hud
             modules = new ModuleStripView(root, "Modules", Services.Modules, 56f, true, "");
             UIFactory.Anchor(modules.Root, 0f, 1f, 0f, 1f, 0f, -138f, 460f, 58f);
 
-            // Верх по центру: корабль, комната, враги
             RectTransform plate = UIFactory.Rect("ShipPlate", root);
             UIFactory.Anchor(plate, 0.5f, 1f, 0.5f, 1f, 0f, 0f, 460f, 150f);
             UIFactory.Panel(plate, "Panel", UIColors.WithAlpha(UIColors.Hull, 0.82f), UIColors.WithAlpha(UIColors.Steel, 0.9f));
@@ -95,7 +85,6 @@ namespace HullBreach.UI.Hud
             UIFactory.HorizontalGroup(pipsRect, 6f, TextAnchor.MiddleCenter);
             roomPips = new PipsView(pipsRect, 64f, 12f);
 
-            // Верхний правый угол: пауза
             RectTransform pause = UIFactory.Rect("Pause", root);
             UIFactory.Anchor(pause, 1f, 1f, 1f, 1f, 0f, 0f, 92f, 92f);
             Image pauseBack = UIFactory.AddImage(pause.gameObject, ProceduralSprites.Circle, UIColors.WithAlpha(UIColors.Hull, 0.8f), Image.Type.Simple, true);
@@ -111,15 +100,12 @@ namespace HullBreach.UI.Hud
             pauseButton.onClick.AddListener(() => Manager.OpenPauseMenu());
             pause.gameObject.AddComponent<PressScale>();
 
-            // Баннер событий
             banner = BannerView.Create(root, "EventBanner", 780f, 78f, 34f);
             UIFactory.Anchor(banner.Rect, 0.5f, 1f, 0.5f, 1f, 0f, -170f, 780f, 78f);
 
-            // Управление: стик слева, кнопки справа
             joystick = VirtualJoystick.Create(root, Services.Input);
             buttons = CombatButtonsUI.Create(root, Services.Input, feed, Services.Modules);
 
-            // Полноэкранные эффекты (в слое Fx, чтобы виньетка закрывала и область вырезов)
             fxRoot = UIFactory.Rect("HudFx", Manager.Root.FxLayer);
             UIFactory.Stretch(fxRoot);
             vignette = DamageVignette.Create(fxRoot);
@@ -165,8 +151,6 @@ namespace HullBreach.UI.Hud
             }
             if (fxRoot != null) Destroy(fxRoot.gameObject);
         }
-
-        // ------------------------------------------------------------------ Показ и скрытие
 
         protected override void OnShown()
         {
@@ -215,8 +199,6 @@ namespace HullBreach.UI.Hud
             return true;
         }
 
-        // ------------------------------------------------------------------ Опрос каждый кадр
-
         private void Update()
         {
             if (feed == null) return;
@@ -242,8 +224,6 @@ namespace HullBreach.UI.Hud
 
             modules.Tick();
         }
-
-        // ------------------------------------------------------------------ События боя
 
         private void OnHealthChanged(float current, float max)
         {
@@ -340,8 +320,6 @@ namespace HullBreach.UI.Hud
             wallet.SetValue(value, false);
         }
 
-        // ------------------------------------------------------------------ Вспомогательное
-
         private void ShowBanner(string text, Color color, float seconds)
         {
             if (IsShown)
@@ -350,7 +328,6 @@ namespace HullBreach.UI.Hud
             }
             else
             {
-                // HUD ещё появляется: покажем последнее сообщение, как только он станет активным.
                 pendingBannerText = text;
                 pendingBannerColor = color;
                 pendingBannerSeconds = seconds;

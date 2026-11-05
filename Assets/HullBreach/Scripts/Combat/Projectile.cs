@@ -3,11 +3,6 @@ using HullBreach.Core;
 
 namespace HullBreach.Combat
 {
-    /// <summary>
-    /// Снаряд. Двигается кинематическим Rigidbody2D, наносит урон врагам другой фракции,
-    /// исчезает при попадании в твёрдый коллайдер без Health (стена) или по таймеру.
-    /// Использовать только через Projectile.Spawn.
-    /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     public class Projectile : MonoBehaviour
     {
@@ -25,9 +20,6 @@ namespace HullBreach.Combat
             body.gravityScale = 0f;
         }
 
-        /// <summary>
-        /// Создаёт снаряд. Если prefab == null, создаётся простой «невидимый» снаряд (круглый триггер) — для отладки без арта.
-        /// </summary>
         public static Projectile Spawn(Projectile prefab, Vector2 position, Vector2 direction, float speed,
             float damage, Faction faction, GameObject source, float lifetime)
         {
@@ -62,7 +54,6 @@ namespace HullBreach.Combat
             source = src;
             transform.right = dir;
 
-            // Гарантируем триггер на коллайдерах префаба
             Collider2D[] cols = GetComponentsInChildren<Collider2D>();
             for (int i = 0; i < cols.Length; i++) cols[i].isTrigger = true;
 
@@ -88,7 +79,6 @@ namespace HullBreach.Combat
                 return;
             }
 
-            // Твёрдая геометрия (стена) — снаряд исчезает; триггеры (зоны выхода и т.п.) игнорируются
             if (!other.isTrigger) Consume();
         }
 

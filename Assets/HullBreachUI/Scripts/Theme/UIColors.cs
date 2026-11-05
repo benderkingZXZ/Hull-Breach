@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Theme
 {
-    /// <summary>Единая палитра интерфейса. Цвета рисков и редкостей несут смысл, а не только украшают.</summary>
     public static class UIColors
     {
         public static Color Hex(string hex)
@@ -78,7 +77,6 @@ namespace HullBreach.UI.Theme
             }
         }
 
-        /// <summary>Цвет полосы здоровья: красный → янтарный → зелёный.</summary>
         public static Color HealthColor(float ratio)
         {
             ratio = Mathf.Clamp01(ratio);

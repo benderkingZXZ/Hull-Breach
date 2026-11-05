@@ -9,10 +9,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>
-    /// Карта сектора: маршрут из 4 кораблей и босса, 2–3 доступные цели с риском и наградой.
-    /// Выбор карточки не меняет состояние игры; SelectShip вызывается только кнопкой подтверждения.
-    /// </summary>
     public sealed class SectorMapUI : UIScreen
     {
         private const int NodeCount = UIStrings.SectorShipCount + 1;
@@ -37,7 +33,6 @@ namespace HullBreach.UI.Screens
 
             header = UIFactory.CreateHeader(root, "КАРТА СЕКТОРА", "", UIStrings.ToMenu, AskAbandon, true);
 
-            // ---- Маршрут: 4 корабля и босс
             RectTransform track = UIFactory.Rect("Route", root);
             UIFactory.Anchor(track, 0.5f, 1f, 0.5f, 1f, 0f, -150f, 1100f, 120f);
             for (int i = 0; i < NodeCount; i++)
@@ -66,12 +61,10 @@ namespace HullBreach.UI.Screens
                 UIFactory.AnchorStretchX(label.rectTransform, -0.2f, 1.2f, 0f, 1f, -6f, 30f);
             }
 
-            // ---- Карточки кораблей
             cardsRow = UIFactory.Rect("Cards", root);
             UIFactory.AnchorRange(cardsRow, 0f, 0f, 1f, 1f, 0f, 150f, 0f, 290f);
             UIFactory.HorizontalGroup(cardsRow, 36f, TextAnchor.MiddleCenter);
 
-            // ---- Низ экрана
             confirm = UIFactory.CreateButton(root, "Confirm", "К ВЫБОРУ ВХОДА", ButtonStyle.Primary, OnConfirm, 40f, "arrow_right");
             UIFactory.Anchor(confirm.Rect, 0.5f, 0f, 0.5f, 0f, 0f, 0f, 560f, 118f);
 
@@ -201,7 +194,6 @@ namespace HullBreach.UI.Screens
             }
         }
 
-        /// <summary>1…5 делений: только для наглядности (множитель сложности корабля из API).</summary>
         private static int DifficultyPips(ShipDefinition ship)
         {
             if (ship.IsBossShip) return 5;

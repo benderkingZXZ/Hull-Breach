@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace HullBreach.Game
 {
-    /// <summary>Спрайты, рисуемые кодом (белые, красятся через SpriteRenderer.color). Временная графика для прототипа мира.</summary>
     public static class RuntimeSprites
     {
         private static Sprite square;
@@ -20,7 +19,6 @@ namespace HullBreach.Game
             gridTiles.Clear();
         }
 
-        /// <summary>Квадрат 1x1 единица.</summary>
         public static Sprite Square
         {
             get
@@ -30,7 +28,6 @@ namespace HullBreach.Game
             }
         }
 
-        /// <summary>Круг диаметром 1 единица.</summary>
         public static Sprite Circle
         {
             get
@@ -40,7 +37,6 @@ namespace HullBreach.Game
             }
         }
 
-        /// <summary>Кольцо диаметром 1 единица.</summary>
         public static Sprite Ring
         {
             get
@@ -50,7 +46,6 @@ namespace HullBreach.Game
             }
         }
 
-        /// <summary>Плитка пола 2x2 единицы с тонкой сеткой. Использовать с SpriteDrawMode.Tiled.</summary>
         public static Sprite GridTile(Color floor, Color line)
         {
             string key = ColorUtility.ToHtmlStringRGBA(floor) + "_" + ColorUtility.ToHtmlStringRGBA(line);
@@ -75,7 +70,6 @@ namespace HullBreach.Game
             tex.SetPixels32(px);
             tex.Apply(false, true);
 
-            // 64 px на 2 единицы = 32 пикселя на единицу. FullRect нужен для режима Tiled.
             Sprite sprite = Sprite.Create(tex, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 32f, 0, SpriteMeshType.FullRect);
             gridTiles[key] = sprite;
             return sprite;

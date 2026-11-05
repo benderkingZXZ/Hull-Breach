@@ -11,11 +11,6 @@ using HullBreach.RunFlow;
 
 namespace HullBreach.Core
 {
-    /// <summary>
-    /// Конечный автомат игры и единый фасад для интерфейса. Связывает системы (композиционный корень):
-    /// ShipRunManager → ProgressionSystem / ModuleSystem / SectorMapSystem.
-    /// Не загружает сцены и не работает с UI. См. API.md.
-    /// </summary>
     public class GameStateManager : MonoBehaviour
     {
         [Header("Системы (обязательные ссылки)")]
@@ -51,8 +46,6 @@ namespace HullBreach.Core
         public RunSummary LastRunSummary { get; private set; }
         public int RunShipsCaptured { get; private set; }
         public int RunResourcesEarned { get; private set; }
-
-        // ---------------------------------------------------------------- Жизненный цикл
 
         private void OnEnable()
         {
@@ -92,10 +85,6 @@ namespace HullBreach.Core
             }
         }
 
-        /// <summary>
-        /// Программная настройка вместо инспектора (процедурная сборка, см. Assets/HullBreachGame/GameBootstrap).
-        /// Безопасна и после активации компонента: подписки переустанавливаются.
-        /// </summary>
         public void Configure(PlayerController newPlayer, ProgressionSystem newProgression, ModuleSystem newModules,
             SectorMapSystem newSectorMap, ShipRunManager newShipRun)
         {
@@ -120,12 +109,8 @@ namespace HullBreach.Core
             ApplyStateSideEffects(currentState);
         }
 
-        // ---------------------------------------------------------------- Чтение
-
         public IReadOnlyList<ShipDefinition> GetShipOptions() { return sectorMap.CurrentOptions; }
         public IReadOnlyList<EntryPointProfile> GetEntryPoints() { return EntryPointCatalog.All; }
-
-        // ---------------------------------------------------------------- Команды UI
 
         public bool SelectRobot(RobotType robot)
         {
@@ -234,8 +219,6 @@ namespace HullBreach.Core
             return TransitionTo(GameState.MainMenu);
         }
 
-        // ---------------------------------------------------------------- Обработчики систем
-
         private void HandleShipCompleted(ShipCompletionResult result)
         {
             if (currentState != GameState.Combat) return;
@@ -276,7 +259,7 @@ namespace HullBreach.Core
             if (currentState != GameState.Combat) yield break;
 
             shipRun.Cleanup();
-            progression.RegisterRunEnded(false, RunShipsCaptured);   // ресурсы уже начислены и остаются
+            progression.RegisterRunEnded(false, RunShipsCaptured);
             LastRunSummary = BuildSummary(false);
             SelectedShip = null;
             TransitionTo(GameState.Death);
@@ -301,8 +284,6 @@ namespace HullBreach.Core
         {
             RebuildPlayerStats(true);
         }
-
-        // ---------------------------------------------------------------- Внутренняя логика
 
         private void RebuildPlayerStats(bool keepHealthRatio)
         {

@@ -7,11 +7,6 @@ using HullBreach.Data;
 
 namespace HullBreach.Player
 {
-    /// <summary>
-    /// Атака с автонаведением и навык робота.
-    /// Самурай — дуговая ближняя атака, навык «Буря клинков» (урон по площади).
-    /// Техно — снаряды, навык «Перегруз-залп» (кольцо снарядов).
-    /// </summary>
     [RequireComponent(typeof(PlayerController))]
     public class PlayerCombat : MonoBehaviour
     {
@@ -31,12 +26,9 @@ namespace HullBreach.Player
         private float skillReadyTime;
         private Health currentTarget;
 
-        /// <summary>(точка, направление, робот).</summary>
         public event Action<Vector2, Vector2, RobotType> Attacked;
         public event Action<RobotType, Vector2> SkillUsed;
-        /// <summary>Текущая цель автонаведения (может быть null).</summary>
         public event Action<Health> TargetChanged;
-        /// <summary>Срабатывает при любом нажатии кнопки навыка (в том числе при перезарядке) — на него реагируют активные модули.</summary>
         public event Action SkillButtonPressed;
 
         public bool IsAttackHeld { get { return attackHeld; } }
@@ -54,7 +46,6 @@ namespace HullBreach.Player
         private Vector2 Origin { get { return attackOrigin != null ? (Vector2)attackOrigin.position : (Vector2)transform.position; } }
         private bool CanAct { get { return player != null && player.InputEnabled && player.IsAlive; } }
 
-        /// <summary>Программная настройка вместо инспектора.</summary>
         public void Configure(Projectile newProjectilePrefab, Transform newAttackOrigin)
         {
             projectilePrefab = newProjectilePrefab;
@@ -103,13 +94,11 @@ namespace HullBreach.Player
             TargetChanged?.Invoke(target);
         }
 
-        /// <summary>Удерживание кнопки атаки: пока true, атаки повторяются с интервалом Stats.AttackInterval.</summary>
         public void SetAttackHeld(bool held)
         {
             attackHeld = held;
         }
 
-        /// <summary>Одна атака, если прошла перезарядка. Цель выбирается автонаведением.</summary>
         public bool TryAttack()
         {
             if (!CanAct || Time.time < nextAttackTime) return false;
@@ -154,7 +143,6 @@ namespace HullBreach.Player
             Projectile.Spawn(projectilePrefab, origin, dir, projectileSpeed, stats.Damage, Faction.Player, gameObject, projectileLifetime);
         }
 
-        /// <summary>Кнопка навыка. Возвращает true, если сработал навык робота (не модуль).</summary>
         public bool TryUseSkill()
         {
             if (!CanAct) return false;
@@ -197,7 +185,6 @@ namespace HullBreach.Player
             return true;
         }
 
-        /// <summary>Сброс перезарядок (начало корабля).</summary>
         public void ResetCooldowns()
         {
             nextAttackTime = 0f;

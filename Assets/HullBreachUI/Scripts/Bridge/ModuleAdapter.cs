@@ -7,7 +7,6 @@ using HullBreach.UI.Contracts;
 
 namespace HullBreach.UI.Bridge
 {
-    /// <summary>IModuleService поверх HullBreach.Modules.ModuleSystem (только чтение).</summary>
     public sealed class ModuleAdapter : IModuleService
     {
         private readonly ModuleSystem modules;

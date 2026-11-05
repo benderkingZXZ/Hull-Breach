@@ -9,10 +9,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>
-    /// Постоянная прокачка: здоровье и урон. Показывает уровень, текущий бонус, стоимость и остаток ресурсов.
-    /// Покупка требует подтверждения. Данные и цены целиком из IProgressionService — UI ничего не считает сам.
-    /// </summary>
     public sealed class UpgradeScreenUI : UIScreen
     {
         private sealed class UpgradeCardRefs

@@ -4,11 +4,6 @@ using UnityEngine;
 
 namespace HullBreach.Persistence
 {
-    /// <summary>
-    /// Чтение/запись постоянного прогресса в JSON (Application.persistentDataPath).
-    /// Запись: временный файл → копия предыдущей версии в .bak → замена основного файла.
-    /// При повреждении основного файла читается .bak; если и он повреждён — возвращается новый SaveData.
-    /// </summary>
     public class SaveSystem : MonoBehaviour
     {
         [SerializeField] private string fileName = "hullbreach_save.json";
@@ -27,7 +22,6 @@ namespace HullBreach.Persistence
             if (data == null) data = TryRead(BackupPath);
             if (data == null) return new SaveData();
 
-            // Место для миграций: if (data.Version < 2) { ... }
             data.Version = SaveData.CurrentVersion;
             data.Resources = Mathf.Max(0, data.Resources);
             data.HealthLevel = Mathf.Max(0, data.HealthLevel);

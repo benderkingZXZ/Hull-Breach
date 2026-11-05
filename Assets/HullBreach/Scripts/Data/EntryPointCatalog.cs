@@ -3,7 +3,6 @@ using HullBreach.Core;
 
 namespace HullBreach.Data
 {
-    /// <summary>Параметры одной из трёх точек входа (риск — награда).</summary>
     public sealed class EntryPointProfile
     {
         private readonly float[] enemyWeights;
@@ -15,7 +14,6 @@ namespace HullBreach.Data
         public float EnemyCountMultiplier { get; }
         public float EnemyStrengthMultiplier { get; }
         public float ResourceMultiplier { get; }
-        /// <summary>Сдвиг шансов редкости модуля (0..1): доля «веса» обычных, переходящая в редкие/эпические.</summary>
         public float RareModuleBonus { get; }
 
         public EntryPointProfile(EntryPointType entry, string displayName, string description, int roomCount,
@@ -33,7 +31,6 @@ namespace HullBreach.Data
             enemyWeights = new[] { weightDrone, weightGunner, weightHeavy, weightExploder };
         }
 
-        /// <summary>Вес типа врага в таблице спавна (MiniBoss всегда 0 — он ставится отдельно).</summary>
         public float GetEnemyWeight(EnemyType type)
         {
             int i = (int)type;

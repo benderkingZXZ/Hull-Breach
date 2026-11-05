@@ -12,20 +12,13 @@ using UnityEngine;
 
 namespace HullBreach.UI.Framework
 {
-    /// <summary>
-    /// ЕДИНСТВЕННЫЙ компонент, который нужно добавить в сцену. Создаёт Canvas, экраны, мобильное управление,
-    /// подключает сервисы игрового модуля (или заглушку) и запускает навигацию.
-    /// </summary>
     [DefaultExecutionOrder(-20)]
     public sealed class HullBreachUIBootstrap : MonoBehaviour
     {
         public enum ServiceMode
         {
-            /// <summary>Есть GameStateManager в сцене → бэкенд, иначе заглушка.</summary>
             Auto,
-            /// <summary>Только бэкенд (ошибка в консоль, если не найден; затем всё равно заглушка).</summary>
             Backend,
-            /// <summary>Только заглушка: UI работает без игровых систем.</summary>
             Mock
         }
 
@@ -55,10 +48,6 @@ namespace HullBreach.UI.Framework
 
         public UIServices Services { get { return services; } }
 
-        /// <summary>
-        /// Программная настройка до Start(): нужна, когда интерфейс создаётся кодом без сцены и инспектора
-        /// (Assets/HullBreachGame/GameBootstrap). Единственное изменение исходников фронтенда при интеграции.
-        /// </summary>
         public void Configure(UITheme newTheme, Camera newWorldCamera)
         {
             theme = newTheme;

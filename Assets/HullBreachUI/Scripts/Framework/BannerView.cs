@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Framework
 {
-    /// <summary>Короткое сообщение с плавным появлением и затуханием (баннер событий HUD и «тосты»).</summary>
     public sealed class BannerView : MonoBehaviour
     {
         private CanvasGroup group;

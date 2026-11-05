@@ -7,7 +7,6 @@ using HullBreach.RunFlow;
 
 namespace HullBreach.Tests
 {
-    /// <summary>EditMode-тесты чистой логики (без сцены и префабов). НЕ ЗАПУСКАЛИСЬ автором — требуется прогон в Unity.</summary>
     public class HullBreachLogicTests
     {
         [Test]

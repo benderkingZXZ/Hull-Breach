@@ -4,10 +4,6 @@ using UnityEngine.EventSystems;
 
 namespace HullBreach.UI.Controls
 {
-    /// <summary>
-    /// Мультитач-кнопка: реагирует на нажатие и отпускание, следит за своим pointerId.
-    /// Второй палец на той же кнопке игнорируется; отпускание «мимо» кнопки всё равно приходит.
-    /// </summary>
     public sealed class TouchButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         private int pointerId = int.MinValue;

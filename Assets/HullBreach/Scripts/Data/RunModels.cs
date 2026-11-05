@@ -65,7 +65,6 @@ namespace HullBreach.Data
         }
     }
 
-    /// <summary>Контекст для спавнера врагов в конкретной комнате.</summary>
     public sealed class RoomSpawnContext
     {
         public ShipDefinition Ship { get; }

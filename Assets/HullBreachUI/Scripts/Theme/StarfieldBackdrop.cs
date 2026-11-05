@@ -3,10 +3,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Theme
 {
-    /// <summary>
-    /// Фон меню: космос, два слоя звёзд с параллаксом и едва заметная «обшивка» кораблей.
-    /// В бою отключается (HUD накладывается на игровой мир).
-    /// </summary>
     public sealed class StarfieldBackdrop : MonoBehaviour
     {
         private RawImage far;
@@ -27,7 +23,7 @@ namespace HullBreach.UI.Theme
             UIFactory.Img(root, "Base", ProceduralSprites.White, UIColors.Void);
 
             Image shade = UIFactory.Img(root, "Shade", ProceduralSprites.GradientTop, UIColors.WithAlpha(UIColors.Hex("#0B1E3C"), 0.75f));
-            shade.rectTransform.localScale = new Vector3(1f, -1f, 1f);   // голубоватое свечение у нижнего края
+            shade.rectTransform.localScale = new Vector3(1f, -1f, 1f);
 
             Image hull = UIFactory.Img(root, "HullPlates", ProceduralSprites.Grid, UIColors.WithAlpha(UIColors.Cyan, 0.07f), Image.Type.Tiled);
             hull.raycastTarget = false;

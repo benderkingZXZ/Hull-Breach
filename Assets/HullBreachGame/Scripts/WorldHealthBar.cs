@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace HullBreach.Game
 {
-    /// <summary>Тонкая полоса здоровья над врагом (рисуется спрайтами). Показывается, когда здоровье меньше максимума.</summary>
     public sealed class WorldHealthBar : MonoBehaviour
     {
         private Health health;
@@ -57,7 +56,6 @@ namespace HullBreach.Game
 
         private void LateUpdate()
         {
-            // Полоса не должна вращаться вместе с родителем
             transform.rotation = Quaternion.identity;
         }
 

@@ -4,11 +4,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Theme
 {
-    /// <summary>
-    /// Необязательный ассет темы: подмена шрифтов и спрайтов финальным артом.
-    /// Если ассет не назначен или поле пустое, используются процедурные временные ресурсы (ProceduralSprites).
-    /// Создание: Assets → Create → Hull Breach → UI Theme.
-    /// </summary>
     [CreateAssetMenu(menuName = "Hull Breach/UI Theme", fileName = "HullBreachUITheme")]
     public sealed class UITheme : ScriptableObject
     {

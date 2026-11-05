@@ -4,10 +4,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Framework
 {
-    /// <summary>
-    /// Создаёт корневой Canvas: Screen Space Overlay, CanvasScaler 1920×1080 (match по высоте),
-    /// слои и SafeArea. Никаких ручных настроек в сцене не требуется.
-    /// </summary>
     public static class UIRootBuilder
     {
         public static readonly Vector2 ReferenceResolution = new Vector2(1920f, 1080f);
@@ -24,7 +20,7 @@ namespace HullBreach.UI.Framework
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = ReferenceResolution;
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight = 1f;   // высота всегда 1080 единиц, ширина подстраивается под экран (4:3 … 21:9)
+            scaler.matchWidthOrHeight = 1f;
 
             UIRootRefs r = new UIRootRefs();
             r.RootObject = go;

@@ -4,18 +4,15 @@ using HullBreach.Core;
 
 namespace HullBreach.Data
 {
-    /// <summary>Суммарные пассивные модификаторы (от модулей).</summary>
     [Serializable]
     public struct StatModifiers
     {
         public float FlatHealth;
-        /// <summary>Доля: 0.15 = +15 %.</summary>
         public float DamageBonus;
         public float MoveSpeedBonus;
         public float AttackSpeedBonus;
     }
 
-    /// <summary>Итоговые боевые характеристики игрока (неизменяемый снимок).</summary>
     public sealed class PlayerStats
     {
         public float MaxHealth { get; }
@@ -34,8 +31,6 @@ namespace HullBreach.Data
 
     public static class PlayerStatsCalculator
     {
-        /// <param name="permanentBonusHealth">Плоский бонус здоровья от постоянной прокачки.</param>
-        /// <param name="permanentDamageMultiplier">Множитель урона от постоянной прокачки (1 = без бонуса).</param>
         public static PlayerStats Build(RobotType robot, float permanentBonusHealth, float permanentDamageMultiplier, StatModifiers modifiers)
         {
             RobotDefinition def = RobotDefinitions.Get(robot);

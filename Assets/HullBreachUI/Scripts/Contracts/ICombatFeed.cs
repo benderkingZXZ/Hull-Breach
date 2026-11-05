@@ -5,10 +5,9 @@ using UnityEngine;
 
 namespace HullBreach.UI.Contracts
 {
-    /// <summary>Комната, в которую вошёл игрок.</summary>
     public readonly struct RoomInfo
     {
-        public readonly int Index;     // с нуля
+        public readonly int Index;
         public readonly int Total;
         public readonly RoomRole Role;
 
@@ -18,7 +17,6 @@ namespace HullBreach.UI.Contracts
         }
     }
 
-    /// <summary>Урон, полученный роботом. Amount — фактический (после щита); 0 = всё поглотил щит.</summary>
     public readonly struct DamageEvent
     {
         public readonly float Amount;
@@ -30,10 +28,6 @@ namespace HullBreach.UI.Contracts
         }
     }
 
-    /// <summary>
-    /// Данные боя для HUD (только чтение + события). Реализация: Bridge/CombatAdapter.
-    /// Метод Poll-свойств (щит, перезарядка, враги) HUD опрашивает каждый кадр — событий для них в API v1.0 нет.
-    /// </summary>
     public interface ICombatFeed
     {
         float CurrentHealth { get; }
@@ -53,14 +47,14 @@ namespace HullBreach.UI.Contracts
         bool TryGetPlayerPosition(out Vector3 worldPosition);
         bool TryGetTargetPosition(out Vector3 worldPosition);
 
-        event Action<float, float> HealthChanged;            // (текущее, максимум)
+        event Action<float, float> HealthChanged;
         event Action<DamageEvent> PlayerDamaged;
         event Action SkillUsed;
         event Action<RobotType> RobotChanged;
         event Action<ShipDefinition, EntryPointType> ShipStarted;
         event Action<RoomInfo> RoomEntered;
-        event Action<int> RoomCleared;                       // индекс комнаты
-        event Action<int, Vector3> ResourcesEarned;          // (сумма, мировая позиция)
+        event Action<int> RoomCleared;
+        event Action<int, Vector3> ResourcesEarned;
         event Action ShipFailed;
     }
 }

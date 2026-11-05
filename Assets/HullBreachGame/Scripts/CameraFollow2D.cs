@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace HullBreach.Game
 {
-    /// <summary>Камера следует за игроком и не выходит за границы текущей комнаты (если они заданы).</summary>
     [RequireComponent(typeof(Camera))]
     public sealed class CameraFollow2D : MonoBehaviour
     {
@@ -34,7 +33,6 @@ namespace HullBreach.Game
             hasBounds = false;
         }
 
-        /// <summary>Мгновенно перенести камеру к цели (при входе в комнату).</summary>
         public void Snap()
         {
             if (target == null) return;

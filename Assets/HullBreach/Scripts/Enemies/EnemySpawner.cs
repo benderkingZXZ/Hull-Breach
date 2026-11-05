@@ -11,13 +11,10 @@ namespace HullBreach.Enemies
     public class EnemyPrefabEntry
     {
         public EnemyType type;
+        public bool finalShipBoss;
         public EnemyController prefab;
     }
 
-    /// <summary>
-    /// Создаёт врагов в комнате по таблице точки входа и сложности корабля.
-    /// Количество: (2 + Tier + roomIndex/2) * EnemyCountMultiplier; в комнате реактора — мини-босс + половина обычной волны.
-    /// </summary>
     public class EnemySpawner : MonoBehaviour
     {
         [SerializeField] private EnemyPrefabEntry[] enemyPrefabs;
@@ -27,7 +24,6 @@ namespace HullBreach.Enemies
         private static readonly EnemyType[] RegularTypes =
             { EnemyType.Drone, EnemyType.Gunner, EnemyType.Heavy, EnemyType.Exploder };
 
-        /// <summary>Программная настройка вместо инспектора.</summary>
         public void Configure(EnemyPrefabEntry[] entries, float activationDelay)
         {
             enemyPrefabs = entries;
@@ -36,23 +32,28 @@ namespace HullBreach.Enemies
 
         public bool HasPrefabFor(EnemyType type)
         {
-            return FindPrefab(type) != null;
+            return FindPrefab(type, false) != null;
         }
 
-        private EnemyController FindPrefab(EnemyType type)
+        private EnemyController FindPrefab(EnemyType type, bool finalShipBoss)
         {
             if (enemyPrefabs == null) return null;
+            EnemyController fallback = null;
             for (int i = 0; i < enemyPrefabs.Length; i++)
-                if (enemyPrefabs[i] != null && enemyPrefabs[i].type == type && enemyPrefabs[i].prefab != null)
-                    return enemyPrefabs[i].prefab;
-            return null;
+            {
+                EnemyPrefabEntry entry = enemyPrefabs[i];
+                if (entry == null || entry.type != type || entry.prefab == null) continue;
+                if (entry.finalShipBoss == finalShipBoss) return entry.prefab;
+                if (!entry.finalShipBoss) fallback = entry.prefab;
+            }
+            return fallback;
         }
 
-        /// <summary>Спавнит врагов, регистрирует их в комнате и активирует. Возвращает число созданных врагов.</summary>
         public int SpawnForRoom(RoomController room, RoomSpawnContext ctx, Transform target, System.Random rng)
         {
             if (room == null || ctx == null || ctx.Ship == null || ctx.Profile == null) return 0;
 
+            bool finalBoss = ctx.Ship.IsBossShip;
             float difficulty = ctx.Ship.DifficultyMultiplier * ctx.Profile.EnemyStrengthMultiplier * (1f + 0.05f * ctx.RoomIndex);
             float resourceMultiplier = ctx.Profile.ResourceMultiplier;
 
@@ -62,7 +63,7 @@ namespace HullBreach.Enemies
 
             if (ctx.IsReactorRoom)
             {
-                if (SpawnOne(room, EnemyType.MiniBoss, room.BossSpawnPosition, target, difficulty, resourceMultiplier)) spawned++;
+                if (SpawnOne(room, EnemyType.MiniBoss, room.BossSpawnPosition, target, difficulty, resourceMultiplier, finalBoss)) spawned++;
                 count = Mathf.Max(2, count / 2);
             }
 
@@ -70,15 +71,15 @@ namespace HullBreach.Enemies
             {
                 EnemyType type = RollType(ctx.Profile, rng);
                 Vector3 pos = GetSpawnPosition(room, i, rng);
-                if (SpawnOne(room, type, pos, target, difficulty, resourceMultiplier)) spawned++;
+                if (SpawnOne(room, type, pos, target, difficulty, resourceMultiplier, finalBoss)) spawned++;
             }
             return spawned;
         }
 
         private bool SpawnOne(RoomController room, EnemyType type, Vector3 position, Transform target,
-            float difficulty, float resourceMultiplier)
+            float difficulty, float resourceMultiplier, bool finalBoss)
         {
-            EnemyController prefab = FindPrefab(type);
+            EnemyController prefab = FindPrefab(type, finalBoss);
             if (prefab == null)
             {
                 Debug.LogError("[HullBreach] EnemySpawner: не назначен префаб для " + type, this);

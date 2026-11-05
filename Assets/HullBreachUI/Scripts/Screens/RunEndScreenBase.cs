@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>Блок «Итоги забега»: корабли, отсеки, враги, время, добытые ресурсы и собранные модули.</summary>
     public sealed class RunResultView
     {
         public RectTransform Root { get; private set; }
@@ -82,7 +81,6 @@ namespace HullBreach.UI.Screens
         }
     }
 
-    /// <summary>Блок «Прогресс сохранён»: запас ресурсов, уровни прокачки, рекорды.</summary>
     public sealed class SavedProgressView
     {
         public RectTransform Root { get; private set; }
@@ -138,7 +136,6 @@ namespace HullBreach.UI.Screens
         }
     }
 
-    /// <summary>Общая основа экранов смерти и победы: заголовок, итоги, сохранённый прогресс и ряд кнопок.</summary>
     public abstract class RunEndScreenBase : UIScreen
     {
         private RunResultView result;

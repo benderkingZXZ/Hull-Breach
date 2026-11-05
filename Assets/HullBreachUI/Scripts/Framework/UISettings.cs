@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace HullBreach.UI.Framework
 {
-    /// <summary>
-    /// Настройки интерфейса (не игровой прогресс): громкость, вибрация, числа урона, поведение стика.
-    /// Хранятся в PlayerPrefs; игровой прогресс UI не сохраняет — это зона SaveSystem бэкенда.
-    /// </summary>
     public static class UISettings
     {
         private const string KeyVolume = "hb_ui_volume";
@@ -80,7 +76,6 @@ namespace HullBreach.UI.Framework
             Raise();
         }
 
-        /// <summary>Записать настройки на диск (при закрытии окна настроек и при сворачивании приложения).</summary>
         public static void Flush()
         {
             PlayerPrefs.Save();

@@ -6,7 +6,6 @@ using HullBreach.UI.Contracts;
 
 namespace HullBreach.UI.Bridge
 {
-    /// <summary>IGameFlowService поверх HullBreach.Core.GameStateManager. Никакой логики — только делегирование.</summary>
     public sealed class GameFlowAdapter : IGameFlowService
     {
         private readonly GameStateManager gsm;

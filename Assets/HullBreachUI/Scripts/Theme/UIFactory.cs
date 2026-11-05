@@ -66,7 +66,6 @@ namespace HullBreach.UI.Theme
         public void SetSelected(bool value) { Visual.SetSelected(value); }
     }
 
-    /// <summary>Ряд маленьких плашек: уровень прокачки, сложность, прогресс по комнатам.</summary>
     public sealed class PipsView
     {
         public RectTransform Rect;
@@ -100,7 +99,6 @@ namespace HullBreach.UI.Theme
             return UIFactory.AddImage(r.gameObject, ProceduralSprites.Bar, Color.white, Image.Type.Sliced);
         }
 
-        /// <summary>Перекрасить одну плашку (например, текущую комнату).</summary>
         public void Highlight(int index, Color color)
         {
             if (index >= 0 && index < pips.Count) pips[index].color = color;
@@ -123,10 +121,8 @@ namespace HullBreach.UI.Theme
         public WalletView Wallet;
     }
 
-    /// <summary>Фабрика элементов Unity UI, собираемых кодом (без префабов и сцен).</summary>
     public static class UIFactory
     {
-        // ------------------------------------------------------------------ RectTransform
 
         public static RectTransform Rect(string name, Transform parent)
         {
@@ -146,7 +142,6 @@ namespace HullBreach.UI.Theme
             return rt;
         }
 
-        /// <summary>Якорь в одной точке + пивот + позиция + размер.</summary>
         public static RectTransform Anchor(RectTransform rt, float ax, float ay, float px, float py, float x, float y, float w, float h)
         {
             rt.anchorMin = new Vector2(ax, ay);
@@ -157,7 +152,6 @@ namespace HullBreach.UI.Theme
             return rt;
         }
 
-        /// <summary>Якоря-диапазон (доли родителя) + отступы в единицах холста.</summary>
         public static RectTransform AnchorRange(RectTransform rt, float minX, float minY, float maxX, float maxY,
             float left, float bottom, float right, float top)
         {
@@ -168,7 +162,6 @@ namespace HullBreach.UI.Theme
             return rt;
         }
 
-        /// <summary>Растянут по ширине (доли родителя), по высоте — одна точка якоря.</summary>
         public static RectTransform AnchorStretchX(RectTransform rt, float minX, float maxX, float ay, float py, float y, float h)
         {
             rt.anchorMin = new Vector2(minX, ay);
@@ -213,8 +206,6 @@ namespace HullBreach.UI.Theme
             return g;
         }
 
-        // ------------------------------------------------------------------ Изображения
-
         public static Image AddImage(GameObject go, Sprite sprite, Color color, Image.Type type = Image.Type.Simple, bool raycast = false)
         {
             Image img = go.AddComponent<Image>();
@@ -225,7 +216,6 @@ namespace HullBreach.UI.Theme
             return img;
         }
 
-        /// <summary>Дочерний объект на всю область родителя с Image.</summary>
         public static Image Img(Transform parent, string name, Sprite sprite, Color color, Image.Type type = Image.Type.Simple)
         {
             RectTransform rt = Rect(name, parent);
@@ -242,8 +232,6 @@ namespace HullBreach.UI.Theme
             if (withEdge) p.Edge = Img(p.Rect, "Edge", ProceduralSprites.PanelEdge, edge, Image.Type.Sliced);
             return p;
         }
-
-        // ------------------------------------------------------------------ Текст
 
         public static TMP_Text Label(Transform parent, string name, string text, float size, Color color,
             FontStyles style = FontStyles.Normal, TextAlignmentOptions align = TextAlignmentOptions.Center, bool title = false)
@@ -264,7 +252,6 @@ namespace HullBreach.UI.Theme
             return t;
         }
 
-        /// <summary>Текст сжимается, а не переносится, если не помещается.</summary>
         public static TMP_Text FitOneLine(TMP_Text t, float minSize, float maxSize)
         {
             t.enableWordWrapping = false;
@@ -273,8 +260,6 @@ namespace HullBreach.UI.Theme
             t.fontSizeMax = maxSize;
             return t;
         }
-
-        // ------------------------------------------------------------------ Кнопки
 
         public static ButtonView CreateButton(Transform parent, string name, string label, ButtonStyle style,
             Action onClick, float fontSize = 34f, string iconKey = null)
@@ -333,8 +318,6 @@ namespace HullBreach.UI.Theme
             return v;
         }
 
-        // ------------------------------------------------------------------ Полосы, слайдеры, карточки
-
         public static BarView CreateBar(Transform parent, string name, Color fill, Color back)
         {
             BarView b = new BarView();
@@ -349,7 +332,6 @@ namespace HullBreach.UI.Theme
             return b;
         }
 
-        /// <summary>Строка «название — полоса — значение» для карточек точки входа.</summary>
         public static BarView CreateStatRow(Transform parent, float yTop, string label, float fill, Color color, string valueText)
         {
             RectTransform row = Rect("Stat_" + label, parent);
@@ -449,8 +431,6 @@ namespace HullBreach.UI.Theme
             c.Visual.Accent = accent;
             return c;
         }
-
-        // ------------------------------------------------------------------ Кошелёк и шапка экрана
 
         public static WalletView CreateWallet(Transform parent, string name)
         {

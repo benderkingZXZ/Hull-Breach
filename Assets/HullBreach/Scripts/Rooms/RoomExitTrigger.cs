@@ -3,9 +3,6 @@ using HullBreach.Player;
 
 namespace HullBreach.Rooms
 {
-    /// <summary>
-    /// Триггер выхода из комнаты (Collider2D с isTrigger). Активируется (SetArmed) только когда комната зачищена.
-    /// </summary>
     [RequireComponent(typeof(Collider2D))]
     public class RoomExitTrigger : MonoBehaviour
     {
@@ -20,7 +17,6 @@ namespace HullBreach.Rooms
             if (c != null) c.isTrigger = true;
         }
 
-        /// <summary>Программная настройка вместо инспектора.</summary>
         public void Configure(RoomController owner)
         {
             room = owner;

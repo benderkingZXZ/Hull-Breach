@@ -5,7 +5,6 @@ using HullBreach.UI.Contracts;
 
 namespace HullBreach.UI.Bridge
 {
-    /// <summary>IProgressionService поверх HullBreach.Meta.ProgressionSystem.</summary>
     public sealed class ProgressionAdapter : IProgressionService
     {
         private readonly ProgressionSystem progression;

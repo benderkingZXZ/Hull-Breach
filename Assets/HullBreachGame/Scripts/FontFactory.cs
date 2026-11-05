@@ -5,10 +5,6 @@ using UnityEngine.TextCore.LowLevel;
 
 namespace HullBreach.Game
 {
-    /// <summary>
-    /// Создаёт TMP-шрифты с кириллицей во время запуска из TTF в Resources/Fonts (Liberation Sans, SIL OFL)
-    /// и упаковывает их в UITheme для интерфейса.
-    /// </summary>
     public static class FontFactory
     {
         public static UITheme CreateTheme()
@@ -46,7 +42,6 @@ namespace HullBreach.Game
             return asset;
         }
 
-        /// <summary>Добавляет динамический шрифт в запасные шрифты TMP: тексты без явного шрифта тоже получат кириллицу.</summary>
         private static void RegisterFallback(TMP_FontAsset font)
         {
             if (font == null) return;

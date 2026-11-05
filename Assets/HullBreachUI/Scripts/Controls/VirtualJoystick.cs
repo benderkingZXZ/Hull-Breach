@@ -8,13 +8,6 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Controls
 {
-    /// <summary>
-    /// Виртуальный стик слева. Зона касания — левые 46% безопасной области и нижние 62%: палец можно ставить
-    /// в любое место зоны. Фиксированный режим: стик на месте, вектор считается от его центра.
-    /// Плавающий режим: стик появляется под пальцем. Вектор отправляется в ICombatInputSink КАЖДЫЙ кадр,
-    /// пока палец на экране (бэкенд обнуляет ввод при смене комнат, поэтому разовой отправки недостаточно).
-    /// Работает одновременно с кнопками: каждый палец имеет свой pointerId.
-    /// </summary>
     public sealed class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
         private const float BaseSize = 270f;
@@ -40,7 +33,7 @@ namespace HullBreach.UI.Controls
         public static VirtualJoystick Create(RectTransform parent, ICombatInputSink sink)
         {
             RectTransform zone = UIFactory.Rect("JoystickZone", parent);
-            zone.pivot = Vector2.zero;                                   // локальные координаты — от левого нижнего угла
+            zone.pivot = Vector2.zero;
             UIFactory.AnchorRange(zone, 0f, 0f, 0.46f, 0.62f, 0f, 0f, 0f, 0f);
             UIFactory.AddImage(zone.gameObject, ProceduralSprites.White, new Color(1f, 1f, 1f, 0f), Image.Type.Simple, true);
 

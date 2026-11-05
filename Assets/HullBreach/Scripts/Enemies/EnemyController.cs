@@ -8,13 +8,6 @@ namespace HullBreach.Enemies
 {
     public enum EnemyAiState { Inactive, Chasing, Attacking, Stunned, Dead }
 
-    /// <summary>
-    /// ИИ врага: поиск/преследование игрока, атаки, оглушение, смерть и награда.
-    /// Поведение зависит от EnemyType:
-    ///  Drone — быстрый ближний бой; Gunner — стрелок, держит дистанцию; Heavy — медленный, удар с замахом;
-    ///  Exploder — камикадзе с запалом и взрывом по площади; MiniBoss — ближний бой + круговой залп.
-    /// Движение — прямая линия к игроку (без навигационной сетки).
-    /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Health))]
     public class EnemyController : MonoBehaviour
@@ -44,18 +37,16 @@ namespace HullBreach.Enemies
         private float fuseEnd = -1f;
         private float nextBurstTime;
 
-        /// <summary>Срабатывает один раз при смерти (после отключения коллизий).</summary>
         public event Action<EnemyController> Died;
+        public event Action<EnemyController> Fired;
 
         public EnemyType Type { get { return enemyType; } }
         public bool IsBoss { get { return enemyType == EnemyType.MiniBoss; } }
         public EnemyAiState State { get; private set; } = EnemyAiState.Inactive;
         public Health Health { get { return health; } }
-        /// <summary>Награда ресурсами за убийство (уже с учётом множителя точки входа). 0, если враг взорвался сам.</summary>
         public int ResourceReward { get; private set; }
         public Vector2 FacingDirection { get; private set; } = Vector2.right;
 
-        /// <summary>Программная настройка вместо инспектора. Вызывать до активации объекта (до Awake).</summary>
         public void Configure(EnemyType type, Projectile newProjectilePrefab)
         {
             enemyType = type;
@@ -91,7 +82,6 @@ namespace HullBreach.Enemies
             ResourceReward = Mathf.RoundToInt(UnityEngine.Random.Range(min, max + 1) * resourceMultiplier);
         }
 
-        /// <summary>Настройка врага перед активацией. difficulty множит здоровье (и частично урон).</summary>
         public void Initialize(Transform playerTarget, float difficulty, float resourceMultiplier)
         {
             target = playerTarget;
@@ -100,7 +90,6 @@ namespace HullBreach.Enemies
             ApplyScaledStats(baseStats, Mathf.Max(0.1f, difficulty), Mathf.Max(0f, resourceMultiplier));
         }
 
-        /// <summary>Враг начинает действовать через delay секунд (время «появления»).</summary>
         public void Activate(float delay)
         {
             activated = true;
@@ -142,7 +131,7 @@ namespace HullBreach.Enemies
                 case EnemyType.Exploder:
                     TickExploder(dir, dist);
                     break;
-                default: // Drone, Heavy, MiniBoss
+                default:
                     TickMelee(dir, dist);
                     break;
             }
@@ -198,6 +187,7 @@ namespace HullBreach.Enemies
                 Projectile.Spawn(projectilePrefab, body.position, dir, stats.ProjectileSpeed, stats.Damage,
                     Faction.Enemy, gameObject, 4f);
                 nextAttackTime = Time.time + stats.AttackCooldown;
+                Fired?.Invoke(this);
             }
         }
 
@@ -229,6 +219,7 @@ namespace HullBreach.Enemies
 
         private void FireRing()
         {
+            Fired?.Invoke(this);
             float dmg = stats.Damage * 0.6f;
             for (int i = 0; i < BossBurstProjectiles; i++)
             {
@@ -243,7 +234,7 @@ namespace HullBreach.Enemies
             if (State == EnemyAiState.Dead) return;
             State = EnemyAiState.Dead;
             pendingStrike = false;
-            body.simulated = false;   // отключает коллайдеры и физику
+            body.simulated = false;
             Died?.Invoke(this);
             Destroy(gameObject, destroyDelay);
         }

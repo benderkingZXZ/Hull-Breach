@@ -5,10 +5,8 @@ using UnityEngine.UI;
 
 namespace HullBreach.UI.Screens
 {
-    /// <summary>Мелкие повторяющиеся детали карточек: плашки-теги и разделители.</summary>
     public static class CardParts
     {
-        /// <summary>Закрашенная плашка с текстом (риск, редкость, «ВЫБРАН»). Позицию задаёт вызывающий код.</summary>
         public static RectTransform Pill(Transform parent, string name, string text, Color color, float fontSize)
         {
             RectTransform rt = UIFactory.Rect(name, parent);
@@ -33,7 +31,6 @@ namespace HullBreach.UI.Screens
             UIFactory.AddImage(rt.gameObject, ProceduralSprites.White, UIColors.WithAlpha(UIColors.Steel, 0.6f));
         }
 
-        /// <summary>Подпись слева и значение справа в одной строке карточки.</summary>
         public static RectTransform Row(Transform parent, string label, float yTop, float height)
         {
             RectTransform row = UIFactory.Rect("Row_" + label, parent);
